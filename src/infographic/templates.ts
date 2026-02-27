@@ -52,44 +52,66 @@ function pickTheme(): ColorTheme {
 // =============================================
 // COVER SLIDE  (1080 x 1350)
 // =============================================
-function renderCoverSlide(content: GeneratedContent, theme: ColorTheme): string {
+function renderCoverSlide(content: GeneratedContent, theme: ColorTheme, bgBase64: string): string {
+  const bgStyle = bgBase64
+    ? `background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.88) 100%), url('${bgBase64}') center/cover no-repeat;`
+    : `background: ${theme.bg};`;
+  const hasImg = !!bgBase64;
+
   return `<!DOCTYPE html><html><head><style>
-    ${FONTS} ${RESET}
-    body { background: ${theme.bg}; }
+    ${FONTS}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1350px; overflow: hidden;
+      font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased;
+      ${bgStyle}
+    }
     .wrap {
       width: 1080px; height: 1350px;
-      display: flex; flex-direction: column; justify-content: space-between;
-      padding: 100px 80px 80px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 80px 80px;
     }
     .label {
-      display: inline-block; background: ${theme.accent}; color: white;
-      font-size: 18px; font-weight: 700; padding: 14px 30px;
-      border-radius: 100px; text-transform: uppercase; letter-spacing: 3px;
-      margin-bottom: 56px;
+      display: inline-block;
+      background: ${hasImg ? 'rgba(255,255,255,0.12)' : theme.accent};
+      color: #FFFFFF;
+      font-size: 16px; font-weight: 700; padding: 12px 26px;
+      border-radius: 100px; text-transform: uppercase; letter-spacing: 4px;
+      margin-bottom: 36px; width: fit-content;
+      ${hasImg ? 'backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15);' : ''}
     }
-    .divider { width: 100px; height: 5px; background: ${theme.accent}; border-radius: 3px; margin-bottom: 40px; }
+    .divider {
+      width: 80px; height: 5px; border-radius: 3px; margin-bottom: 32px;
+      background: ${hasImg ? '#FFFFFF' : theme.accent};
+    }
     .title {
       font-family: 'DM Serif Display', serif;
-      font-size: 86px; font-weight: 400; line-height: 1.1;
-      color: ${theme.text}; margin-bottom: 36px; max-width: 920px;
+      font-size: 92px; font-weight: 400; line-height: 1.08;
+      color: ${hasImg ? '#FFFFFF' : theme.text};
+      margin-bottom: 24px; max-width: 920px;
     }
     .subtitle {
-      font-size: 30px; font-weight: 400; color: ${theme.textSecondary};
-      line-height: 1.55; max-width: 800px;
+      font-size: 28px; font-weight: 400; line-height: 1.55; max-width: 800px; margin-bottom: 60px;
+      color: ${hasImg ? 'rgba(255,255,255,0.75)' : theme.textSecondary};
     }
     .bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-    .brand { font-size: 20px; font-weight: 800; color: ${theme.accent}; letter-spacing: 3px; text-transform: uppercase; }
+    .brand {
+      font-size: 18px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
+      color: ${hasImg ? 'rgba(255,255,255,0.9)' : theme.accent};
+    }
     .swipe {
-      font-size: 20px; color: ${theme.textSecondary}; font-weight: 600;
+      font-size: 18px; font-weight: 600;
+      color: ${hasImg ? 'rgba(255,255,255,0.5)' : theme.textSecondary};
       display: flex; align-items: center; gap: 14px;
     }
     .swipe-arrow {
-      display: inline-block; width: 50px; height: 3px; background: ${theme.accent}; position: relative;
+      display: inline-block; width: 50px; height: 3px; position: relative;
+      background: ${hasImg ? 'rgba(255,255,255,0.5)' : theme.accent};
     }
     .swipe-arrow::after {
       content: ''; position: absolute; right: 0; top: -5px;
-      border: solid ${theme.accent}; border-width: 0 3px 3px 0;
-      padding: 5px; transform: rotate(-45deg);
+      border: solid ${hasImg ? 'rgba(255,255,255,0.5)' : theme.accent};
+      border-width: 0 3px 3px 0; padding: 5px; transform: rotate(-45deg);
     }
   </style></head><body>
     <div class="wrap">
@@ -246,98 +268,97 @@ function renderFactSlide(
     .wrap {
       width: 1080px; height: 1350px;
       display: flex; flex-direction: column;
-      padding: 60px 72px 40px;
+      padding: 40px 60px 40px;
     }
 
-    .progress { display: flex; gap: 8px; margin-bottom: 32px; }
-    .progress .dot { height: 5px; flex: 1; border-radius: 3px; background: ${theme.border}; }
+    .progress { display: flex; gap: 6px; margin-bottom: 12px; }
+    .progress .dot { height: 6px; flex: 1; border-radius: 3px; background: ${theme.border}; }
     .progress .dot.active { background: ${theme.accent}; }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .slide-num { font-size: 18px; color: ${theme.textSecondary}; font-weight: 700; }
     .brand { font-size: 16px; color: ${theme.textSecondary}; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
 
-    .content { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
-    .accent-bar { width: 60px; height: 5px; background: ${theme.accent}; border-radius: 3px; }
+    .accent-bar { width: 60px; height: 6px; background: ${theme.accent}; border-radius: 3px; margin-bottom: 20px; }
     .heading {
       font-family: 'DM Serif Display', serif;
-      font-size: 48px; font-weight: 400; color: ${theme.text}; line-height: 1.15;
+      font-size: 86px; font-weight: 400; color: ${theme.text}; line-height: 1.08;
+      margin-bottom: 18px;
     }
     .body {
-      font-size: 24px; font-weight: 400; color: ${theme.textSecondary};
-      line-height: 1.6; max-width: 920px;
+      font-size: 28px; font-weight: 400; color: ${theme.textSecondary};
+      line-height: 1.55; margin-bottom: 28px;
     }
 
-    .stats-row { display: flex; gap: 20px; }
+    .data-area { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+
+    .stats-row { display: flex; gap: 16px; }
     .stat-card {
-      background: ${theme.cardBg}; border: 1px solid ${theme.border};
-      border-radius: 18px; padding: 28px 32px; flex: 1;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      background: ${theme.accentLight}; border: 1px solid ${theme.border};
+      border-radius: 16px; padding: 44px 32px; flex: 1;
     }
     .stat-number {
       font-family: 'DM Serif Display', serif;
-      font-size: 46px; font-weight: 400; color: ${theme.accent};
-      line-height: 1; margin-bottom: 8px;
+      font-size: 68px; font-weight: 400; color: ${theme.accent};
+      line-height: 1; margin-bottom: 12px;
     }
-    .stat-label { font-size: 18px; font-weight: 500; color: ${theme.textSecondary}; line-height: 1.35; }
+    .stat-label { font-size: 22px; font-weight: 500; color: ${theme.textSecondary}; line-height: 1.35; }
 
     /* Bar chart */
     .chart-card {
-      background: ${theme.cardBg}; border: 1px solid ${theme.border};
-      border-radius: 18px; padding: 28px 32px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      display: flex; flex-direction: column; gap: 16px;
+      background: ${theme.accentLight}; border: 1px solid ${theme.border};
+      border-radius: 16px; padding: 40px 32px; flex: 1;
+      display: flex; flex-direction: column; gap: 28px; justify-content: center;
     }
-    .bar-row { }
-    .bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .bar-label { font-size: 18px; font-weight: 700; color: ${theme.text}; }
-    .bar-value { font-size: 18px; font-weight: 800; color: ${theme.accent}; }
-    .bar-track { height: 14px; background: ${theme.accentSoft}; border-radius: 7px; overflow: hidden; }
-    .bar-fill { height: 100%; background: ${theme.accent}; border-radius: 7px; }
+    .bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .bar-label { font-size: 26px; font-weight: 700; color: ${theme.text}; }
+    .bar-value { font-size: 26px; font-weight: 800; color: ${theme.accent}; }
+    .bar-track { height: 24px; background: ${theme.accentSoft}; border-radius: 12px; overflow: hidden; }
+    .bar-fill { height: 100%; background: ${theme.accent}; border-radius: 12px; }
 
     /* Donut chart */
-    .donut-wrap { flex-direction: row; align-items: center; gap: 36px; }
-    .donut-chart { position: relative; width: 200px; height: 200px; flex-shrink: 0; }
-    .donut-ring { width: 200px; height: 200px; border-radius: 50%; }
+    .donut-wrap { flex-direction: row; align-items: center; gap: 44px; padding: 36px 32px; }
+    .donut-chart { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
+    .donut-ring { width: 240px; height: 240px; border-radius: 50%; }
     .donut-center {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 110px; height: 110px; border-radius: 50%; background: ${theme.cardBg};
+      width: 130px; height: 130px; border-radius: 50%; background: ${theme.accentLight};
       display: flex; align-items: center; justify-content: center;
     }
-    .donut-highlight { font-family: 'DM Serif Display', serif; font-size: 38px; color: ${theme.accent}; font-weight: 400; }
-    .donut-legend { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .donut-highlight { font-family: 'DM Serif Display', serif; font-size: 48px; color: ${theme.accent}; font-weight: 400; }
+    .donut-legend { display: flex; flex-direction: column; gap: 22px; flex: 1; }
     .legend-item { display: flex; align-items: center; gap: 14px; }
-    .legend-dot { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
-    .legend-label { font-size: 18px; color: ${theme.text}; font-weight: 500; flex: 1; }
-    .legend-pct { font-size: 18px; color: ${theme.accent}; font-weight: 800; }
+    .legend-dot { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; }
+    .legend-label { font-size: 26px; color: ${theme.text}; font-weight: 500; flex: 1; }
+    .legend-pct { font-size: 26px; color: ${theme.accent}; font-weight: 800; }
 
     /* Compare chart */
     .compare-wrap { flex-direction: row; align-items: center; gap: 0; }
-    .compare-item { flex: 1; text-align: center; padding: 32px 20px; }
+    .compare-item { flex: 1; text-align: center; padding: 56px 24px; }
     .compare-alt {
-      background: ${theme.accentLight}; border-radius: 0 18px 18px 0;
-      margin: -28px -32px -28px 0; padding: 56px 32px;
+      background: ${theme.accentSoft}; border-radius: 0 16px 16px 0;
+      margin: -40px -32px -40px 0; padding: 84px 32px;
     }
-    .compare-value { font-family: 'DM Serif Display', serif; font-size: 44px; color: ${theme.accent}; font-weight: 400; margin-bottom: 10px; }
-    .compare-label { font-size: 20px; font-weight: 800; color: ${theme.text}; margin-bottom: 6px; }
-    .compare-desc { font-size: 16px; color: ${theme.textSecondary}; line-height: 1.4; }
-    .compare-vs { font-size: 20px; font-weight: 800; color: ${theme.textSecondary}; padding: 0 12px; flex-shrink: 0; }
+    .compare-value { font-family: 'DM Serif Display', serif; font-size: 60px; color: ${theme.accent}; font-weight: 400; margin-bottom: 14px; }
+    .compare-label { font-size: 26px; font-weight: 800; color: ${theme.text}; margin-bottom: 10px; }
+    .compare-desc { font-size: 20px; color: ${theme.textSecondary}; line-height: 1.4; }
+    .compare-vs { font-size: 26px; font-weight: 800; color: ${theme.textSecondary}; padding: 0 18px; flex-shrink: 0; }
 
     /* Ranked chart */
-    .rank-row { display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid ${theme.border}; }
+    .rank-row { display: flex; align-items: center; gap: 20px; padding: 26px 0; border-bottom: 1px solid ${theme.border}; }
     .rank-row:last-child { border-bottom: none; }
-    .rank-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: ${theme.accent}; font-weight: 400; width: 44px; flex-shrink: 0; }
-    .rank-label { font-size: 20px; font-weight: 700; color: ${theme.text}; flex: 1; }
-    .rank-value { font-size: 18px; font-weight: 800; color: ${theme.accent}; }
+    .rank-num { font-family: 'DM Serif Display', serif; font-size: 42px; color: ${theme.accent}; font-weight: 400; width: 60px; flex-shrink: 0; }
+    .rank-label { font-size: 26px; font-weight: 700; color: ${theme.text}; flex: 1; }
+    .rank-value { font-size: 24px; font-weight: 800; color: ${theme.accent}; }
 
     /* Source */
     .source-bar {
       background: ${theme.accentSoft}; border-radius: 12px;
-      padding: 14px 22px; display: flex; align-items: center; gap: 10px;
-      margin-top: 8px;
+      padding: 18px 26px; display: flex; align-items: center; gap: 12px;
+      margin-top: 18px;
     }
-    .source-icon { font-size: 13px; color: ${theme.accent}; font-weight: 800; letter-spacing: 1px; }
-    .source-text { font-size: 15px; color: ${theme.textSecondary}; font-weight: 500; }
+    .source-icon { font-size: 15px; color: ${theme.accent}; font-weight: 800; letter-spacing: 1px; }
+    .source-text { font-size: 17px; color: ${theme.textSecondary}; font-weight: 500; }
   </style></head><body>
     <div class="wrap">
       <div class="progress">
@@ -347,10 +368,10 @@ function renderFactSlide(
         <span class="slide-num">${String(slideNum).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}</span>
         <span class="brand">Climate Watch</span>
       </div>
-      <div class="content">
-        <div class="accent-bar"></div>
-        <h2 class="heading">${esc(slide.heading)}</h2>
-        <p class="body">${esc(slide.body)}</p>
+      <div class="accent-bar"></div>
+      <h2 class="heading">${esc(slide.heading)}</h2>
+      <p class="body">${esc(slide.body)}</p>
+      <div class="data-area">
         ${statsHtml}
         ${chartHtml}
       </div>
@@ -365,12 +386,12 @@ function renderFactSlide(
 /**
  * Generate all carousel slide HTMLs — cover + data-rich fact slides with varied charts.
  */
-export function renderAllSlides(content: GeneratedContent, _bgPath: string): string[] {
+export function renderAllSlides(content: GeneratedContent, bgBase64: string): string[] {
   const theme = pickTheme();
   const totalSlides = content.slides.length + 1;
 
   const slides: string[] = [];
-  slides.push(renderCoverSlide(content, theme));
+  slides.push(renderCoverSlide(content, theme, bgBase64));
 
   for (let i = 0; i < content.slides.length; i++) {
     slides.push(renderFactSlide(content.slides[i], i + 2, totalSlides, theme));

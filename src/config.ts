@@ -19,6 +19,7 @@ export const config = {
   accessToken: required('ACCESS_TOKEN'),
   openaiApiKey: process.env.OPENAI_API_KEY || '',
   perplexityApiKey: process.env.PERPLEXITY_API_KEY || '',
+  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY || '',
   turso: {
     url: process.env.TURSO_URL || '',
     authToken: process.env.TURSO_AUTH_TOKEN || '',

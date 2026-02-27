@@ -23,7 +23,7 @@ export async function generateBackgroundImage(prompt: string): Promise<string> {
     fs.mkdirSync(TMP_DIR, { recursive: true });
   }
 
-  const fullPrompt = `${prompt}. The image should be visually dramatic and impactful, suitable as a background for an infographic. No text, no words, no letters, no numbers in the image. Photorealistic or artistic documentary style. High contrast, cinematic lighting.`;
+  const fullPrompt = `${prompt}. Visually dramatic, atmospheric, suitable as a background for a climate infographic. No text, no words, no letters, no numbers. Photorealistic documentary style. High contrast, cinematic lighting. Portrait orientation.`;
 
   console.log('[image-gen] Generating background image...');
 
@@ -31,7 +31,7 @@ export async function generateBackgroundImage(prompt: string): Promise<string> {
     model: 'gpt-image-1',
     prompt: fullPrompt,
     n: 1,
-    size: '1024x1024',
+    size: '1024x1536',
     quality: 'medium',
   });
 

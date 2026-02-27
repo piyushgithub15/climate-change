@@ -72,7 +72,20 @@ export async function generateContent(
   const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers.
 You focus on corporate accountability, naming specific companies, CEOs, billionaires, and industry leaders responsible for climate damage.
 You have been provided with LIVE WEB RESEARCH data below — use ONLY the facts, statistics, and sources from that research. Do NOT make up or hallucinate any numbers. If a stat is in the research, use it with its exact source. If something is not in the research, do not invent it.
-Your tone is direct, factual, and educational — like a mini documentary in slides.`;
+Your tone is direct, factual, and educational — like a mini documentary in slides.
+
+CRITICAL WRITING RULES:
+
+1. Every slide body MUST end with a SPECIFIC, VISCERAL consequence — not vague phrases.
+
+BANNED VAGUE PHRASES (never use these): "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future".
+
+REQUIRED: Replace vague phrases with SPECIFIC consequences like: "children developing chronic lung disease from pesticide exposure", "families spending 40% of income on food that cost 15% a decade ago", "200,000 people fleeing flooded coastlines each year", "1 in 3 coral reefs bleached beyond recovery", "farm workers collapsing from 50°C heatwaves".
+
+BAD body: "138 million children are in child labor. This highlights stalled progress. These workers face hazardous conditions, leading to health issues and disrupted education."
+GOOD body: "138 million children are trapped in labor — half in hazardous work with toxic chemicals and heavy machinery. Since 2016, progress has completely stalled, with 8.4 million more children forced into work. These children suffer chronic respiratory disease, pesticide poisoning, and permanent injuries, while being denied the education that could lift their families out of poverty."
+
+2. Use NUMBERS to quantify consequences whenever possible (e.g., "killing 15,000 people annually", "displacing 3.5 million families", "destroying $200 billion in crops").`;
 
   const recentSection = recentPosts.length > 0
     ? `\n\nDO NOT repeat any of these angles — they were already posted in the last 7 days:\n${recentPosts.map(p => `- "${p.title}"`).join('\n')}\n\nPick a COMPLETELY DIFFERENT angle, fact, or story.`
@@ -89,6 +102,10 @@ ${researchSection}
 ${recentSection}
 
 Using the research data above, pick the most compelling angle — one surprising fact, scandal, comparison, or company/person. Be SPECIFIC, not generic. Use ONLY real data from the research.
+
+FOR EVERY SLIDE BODY: Follow this structure — (1) state the fact with a specific number, (2) explain why it's significant, (3) describe the real human/environmental cost. Every body MUST end with a concrete consequence people can visualize — deaths, displacement, destroyed ecosystems, economic losses, health crises.
+
+BEFORE RESPONDING: Re-read each body you wrote. If any body uses vague language like "threatens communities", "contributes to problems", "worsening conditions", or "negative effects" — REWRITE it with a specific, quantified consequence from the research data.
 
 IMPORTANT RULES:
 1. Every slide MUST have a "source" field with a REAL, SPECIFIC data source AND year from the research (e.g., "IEA World Energy Outlook ${currentYear}", "UNEP Emissions Gap Report ${currentYear - 1}").
@@ -136,7 +153,7 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   "slides": [
     {
       "heading": "Heading (max 6 words)",
-      "body": "2-3 sentences with specific names and data.",
+      "body": "2-3 sentences: [1] State the fact with a number. [2] Explain why alarming. [3] Name a SPECIFIC consequence with a number — e.g. 'killing X people', 'displacing X families', 'destroying $Xbn in crops'. NEVER use vague phrases like 'health issues' or 'long-term impacts'.",
       "stat": "Primary number",
       "statLabel": "What it represents",
       "secondaryStat": "Secondary number",

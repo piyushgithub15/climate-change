@@ -3,12 +3,30 @@ import path from 'path';
 import fs from 'fs';
 import { GeneratedContent } from '../content/generator';
 import { renderAllSlides } from './templates';
+import { renderNoirSlides } from './templates-noir';
+import { renderEditorialSlides } from './templates-editorial';
+
+export type TemplateStyle = 'clean' | 'noir' | 'editorial';
 
 const TMP_DIR = path.resolve(__dirname, '..', '..', 'tmp');
 
-/**
- * Render a single HTML string to a 1080x1080 PNG.
- */
+export function pickTemplateStyle(): TemplateStyle {
+  const styles: TemplateStyle[] = ['clean', 'noir', 'editorial'];
+  return styles[Math.floor(Math.random() * styles.length)];
+}
+
+export function templateNeedsImage(_style: TemplateStyle): boolean {
+  return true;
+}
+
+function imageToBase64DataUrl(imagePath: string): string {
+  const buffer = fs.readFileSync(imagePath);
+  const base64 = buffer.toString('base64');
+  const ext = path.extname(imagePath).replace('.', '');
+  const mime = ext === 'jpg' ? 'jpeg' : ext;
+  return `data:image/${mime};base64,${base64}`;
+}
+
 async function renderSlide(browser: Browser, html: string, outputPath: string): Promise<void> {
   const page = await browser.newPage();
   await page.setViewport({ width: 1080, height: 1350, deviceScaleFactor: 1 });
@@ -29,22 +47,37 @@ async function renderSlide(browser: Browser, html: string, outputPath: string): 
   await page.close();
 }
 
-/**
- * Render all carousel slides as individual 1080x1080 PNGs.
- * Returns array of file paths.
- */
 export async function renderCarouselSlides(
   content: GeneratedContent,
+  style: TemplateStyle = 'clean',
+  bgImagePath?: string,
 ): Promise<string[]> {
   if (!fs.existsSync(TMP_DIR)) {
     fs.mkdirSync(TMP_DIR, { recursive: true });
   }
 
-  const slideHtmls = renderAllSlides(content, '');
+  const bgBase64 = bgImagePath && fs.existsSync(bgImagePath)
+    ? imageToBase64DataUrl(bgImagePath)
+    : '';
+
+  let slideHtmls: string[];
+  switch (style) {
+    case 'noir':
+      slideHtmls = renderNoirSlides(content, bgBase64);
+      break;
+    case 'editorial':
+      slideHtmls = renderEditorialSlides(content, bgBase64);
+      break;
+    case 'clean':
+    default:
+      slideHtmls = renderAllSlides(content, bgBase64);
+      break;
+  }
+
   const timestamp = Date.now();
   const outputPaths: string[] = [];
 
-  console.log(`[renderer] Rendering ${slideHtmls.length} carousel slides...`);
+  console.log(`[renderer] Rendering ${slideHtmls.length} slides (template: ${style})...`);
 
   const browser = await puppeteer.launch({
     headless: true,

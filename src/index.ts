@@ -17,6 +17,7 @@ async function main() {
   app.use(express.urlencoded({ extended: true }));
 
   app.use(express.static(path.resolve(__dirname, '..', 'public')));
+  app.use('/preview', express.static(path.resolve(__dirname, '..', 'tmp')));
 
   app.use('/api', postsRouter);
   app.use('/api', pipelineRouter);

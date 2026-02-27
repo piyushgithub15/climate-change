@@ -2,7 +2,8 @@ import fs from 'fs';
 import { CLIMATE_TOPICS } from '../content/topics';
 import { generateContent } from '../content/generator';
 import { researchTopic } from '../content/researcher';
-import { renderCarouselSlides } from '../infographic/renderer';
+import { fetchUnsplashImage } from '../content/unsplash';
+import { renderCarouselSlides, pickTemplateStyle } from '../infographic/renderer';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../media/uploader';
 import { publishCarousel } from '../instagram/api';
 import {
@@ -25,16 +26,18 @@ async function pickNextTopic(): Promise<typeof CLIMATE_TOPICS[number]> {
 
 export async function runPipeline(): Promise<{ postId: number; topicId: string }> {
   const topic = await pickNextTopic();
+  const style = pickTemplateStyle();
   console.log(`\n[pipeline] === Starting carousel pipeline: "${topic.theme}" (${topic.id}) ===`);
+  console.log(`[pipeline] Template style: ${style}`);
 
   const logId = await createPipelineLog(topic.id);
 
   try {
-    console.log('[pipeline] Step 1/5: Researching latest data with Perplexity...');
+    console.log('[pipeline] Step 1/6: Researching latest data with Perplexity...');
     const researchData = await researchTopic(topic.theme);
     console.log('[pipeline] Research complete');
 
-    console.log('[pipeline] Step 2/5: Generating carousel content with GPT-4o...');
+    console.log('[pipeline] Step 2/6: Generating carousel content with GPT-4o...');
     const recentPosts = await getRecentPostTitles(7);
     if (recentPosts.length > 0) {
       console.log(`[pipeline] Avoiding ${recentPosts.length} recent angles from the last 7 days`);
@@ -43,11 +46,20 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
     const slideCount = content.slides.length + 1;
     console.log(`[pipeline] Content generated — "${content.coverTitle}" (${slideCount} slides)`);
 
-    console.log('[pipeline] Step 3/5: Rendering carousel slides...');
-    const slidePaths = await renderCarouselSlides(content);
+    console.log('[pipeline] Step 3/6: Fetching cover image from Unsplash...');
+    let bgImagePath: string | undefined;
+    try {
+      bgImagePath = await fetchUnsplashImage(topic.theme);
+      console.log('[pipeline] Cover image ready');
+    } catch (imgErr: any) {
+      console.warn(`[pipeline] Unsplash image failed (${imgErr.message}), continuing without cover image`);
+    }
+
+    console.log('[pipeline] Step 4/6: Rendering carousel slides...');
+    const slidePaths = await renderCarouselSlides(content, style, bgImagePath);
     console.log(`[pipeline] ${slidePaths.length} slides rendered`);
 
-    console.log('[pipeline] Step 4/5: Uploading slides to Cloudinary...');
+    console.log('[pipeline] Step 5/6: Uploading slides to Cloudinary...');
     if (!isCloudinaryConfigured()) {
       throw new Error(
         'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env'
@@ -60,7 +72,7 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
       console.log(`[pipeline] Uploaded slide ${i + 1}/${slidePaths.length}`);
     }
 
-    console.log('[pipeline] Step 5/5: Publishing carousel to Instagram...');
+    console.log('[pipeline] Step 6/6: Publishing carousel to Instagram...');
     const igMediaId = await publishCarousel(publicUrls, content.caption);
     console.log(`[pipeline] Published! IG Media ID: ${igMediaId}`);
 
@@ -73,13 +85,13 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
     await updatePostStatus(post.id, 'published', { ig_media_id: igMediaId });
 
     await updatePipelineLog(logId, {
-      template_name: 'carousel-clean',
+      template_name: `carousel-${style}`,
       content_json: JSON.stringify(content),
       post_id: post.id,
       status: 'completed',
     });
 
-    cleanup(...slidePaths);
+    cleanup(...slidePaths, ...(bgImagePath ? [bgImagePath] : []));
 
     console.log(`[pipeline] === Carousel complete for "${topic.theme}" ===\n`);
     return { postId: post.id, topicId: topic.id };
