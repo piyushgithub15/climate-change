@@ -1,0 +1,32 @@
+{
+  "name": "instagram-auto-poster",
+  "version": "1.0.0",
+  "description": "Schedule and auto-publish Instagram posts via the Meta Graph API",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.17.0",
+    "axios": "^1.7.0",
+    "cloudinary": "^2.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "openai": "^6.25.0",
+    "puppeteer": "^24.37.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.0",
+    "@types/express": "^5.0.0",
+    "@types/multer": "^1.4.0",
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

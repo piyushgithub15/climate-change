@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Auto-Poster</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Instagram Auto-Poster</h1>
+      <p class="subtitle">Schedule and auto-publish to your Instagram account</p>
+    </header>
+
+    <main>
+      <section class="card create-post">
+        <h2>Schedule a Post</h2>
+        <form id="postForm">
+          <div class="form-group">
+            <label for="postType">Post Type</label>
+            <select id="postType" required>
+              <option value="image">Image</option>
+              <option value="carousel">Carousel (2-10 images)</option>
+              <option value="reel">Reel (video)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mediaUrls">Media URLs <span class="hint">(one per line)</span></label>
+            <textarea id="mediaUrls" rows="3" placeholder="https://example.com/photo.jpg" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="caption">Caption</label>
+            <textarea id="caption" rows="4" placeholder="Write your caption here... #hashtags"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scheduleDate">Date</label>
+              <input type="date" id="scheduleDate" required>
+            </div>
+            <div class="form-group">
+              <label for="scheduleTime">Time</label>
+              <input type="time" id="scheduleTime" required>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Schedule Post</button>
+            <button type="button" class="btn btn-secondary" id="postNowBtn">Post Now</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card pipeline-section">
+        <div class="section-header">
+          <h2>Climate Content Pipeline</h2>
+          <div class="pipeline-actions">
+            <span id="pipelineStatus" class="pipeline-status"></span>
+            <button class="btn btn-accent" id="generateBtn">Generate &amp; Post Now</button>
+          </div>
+        </div>
+        <p class="pipeline-info" id="pipelineInfo">Loading pipeline status...</p>
+        <div id="pipelineLogsContainer"></div>
+      </section>
+
+      <section class="card posts-list">
+        <div class="section-header">
+          <h2>Scheduled Posts</h2>
+          <button class="btn btn-sm" id="refreshBtn">Refresh</button>
+        </div>
+        <div id="postsContainer">
+          <p class="empty-state">Loading posts...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
