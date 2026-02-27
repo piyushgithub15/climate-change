@@ -12,7 +12,7 @@ router.get('/pipeline/logs', async (_req: Request, res: Response) => {
 });
 
 router.get('/pipeline/topics', (_req: Request, res: Response) => {
-  res.json(CLIMATE_TOPICS.map(t => ({ id: t.id, theme: t.theme, description: t.description })));
+  res.json(CLIMATE_TOPICS.map(t => ({ id: t.id, theme: t.theme })));
 });
 
 router.get('/pipeline/status', (_req: Request, res: Response) => {

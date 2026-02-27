@@ -4,11 +4,11 @@ function esc(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-const FONTS = `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');`;
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap');`;
 
 const RESET = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: 1080px; height: 1080px; overflow: hidden; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { width: 1080px; height: 1350px; overflow: hidden; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
 `;
 
 interface ColorTheme {
@@ -50,22 +50,47 @@ function pickTheme(): ColorTheme {
 }
 
 // =============================================
-// COVER SLIDE
+// COVER SLIDE  (1080 x 1350)
 // =============================================
 function renderCoverSlide(content: GeneratedContent, theme: ColorTheme): string {
   return `<!DOCTYPE html><html><head><style>
     ${FONTS} ${RESET}
     body { background: ${theme.bg}; }
-    .wrap { width: 1080px; height: 1080px; display: flex; flex-direction: column; justify-content: space-between; padding: 80px 72px; }
-    .label { display: inline-block; background: ${theme.accent}; color: white; font-size: 14px; font-weight: 600; padding: 10px 22px; border-radius: 100px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 48px; }
-    .title { font-family: 'DM Serif Display', serif; font-size: 68px; font-weight: 400; line-height: 1.12; color: ${theme.text}; margin-bottom: 28px; max-width: 900px; }
-    .subtitle { font-size: 24px; font-weight: 400; color: ${theme.textSecondary}; line-height: 1.5; max-width: 750px; }
+    .wrap {
+      width: 1080px; height: 1350px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 100px 80px 80px;
+    }
+    .label {
+      display: inline-block; background: ${theme.accent}; color: white;
+      font-size: 18px; font-weight: 700; padding: 14px 30px;
+      border-radius: 100px; text-transform: uppercase; letter-spacing: 3px;
+      margin-bottom: 56px;
+    }
+    .divider { width: 100px; height: 5px; background: ${theme.accent}; border-radius: 3px; margin-bottom: 40px; }
+    .title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 86px; font-weight: 400; line-height: 1.1;
+      color: ${theme.text}; margin-bottom: 36px; max-width: 920px;
+    }
+    .subtitle {
+      font-size: 30px; font-weight: 400; color: ${theme.textSecondary};
+      line-height: 1.55; max-width: 800px;
+    }
     .bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-    .brand { font-size: 16px; font-weight: 700; color: ${theme.accent}; letter-spacing: 2px; text-transform: uppercase; }
-    .swipe { font-size: 16px; color: ${theme.textSecondary}; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-    .swipe-arrow { display: inline-block; width: 40px; height: 2px; background: ${theme.accent}; position: relative; }
-    .swipe-arrow::after { content: ''; position: absolute; right: 0; top: -4px; border: solid ${theme.accent}; border-width: 0 2px 2px 0; padding: 4px; transform: rotate(-45deg); }
-    .divider { width: 80px; height: 4px; background: ${theme.accent}; border-radius: 2px; margin-bottom: 24px; }
+    .brand { font-size: 20px; font-weight: 800; color: ${theme.accent}; letter-spacing: 3px; text-transform: uppercase; }
+    .swipe {
+      font-size: 20px; color: ${theme.textSecondary}; font-weight: 600;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .swipe-arrow {
+      display: inline-block; width: 50px; height: 3px; background: ${theme.accent}; position: relative;
+    }
+    .swipe-arrow::after {
+      content: ''; position: absolute; right: 0; top: -5px;
+      border: solid ${theme.accent}; border-width: 0 3px 3px 0;
+      padding: 5px; transform: rotate(-45deg);
+    }
   </style></head><body>
     <div class="wrap">
       <div>
@@ -190,7 +215,7 @@ function hexToRgb(hex: string): string {
 }
 
 // =============================================
-// FACT SLIDE
+// FACT SLIDE  (1080 x 1350)
 // =============================================
 function renderFactSlide(
   slide: SlideContent,
@@ -218,67 +243,101 @@ function renderFactSlide(
   return `<!DOCTYPE html><html><head><style>
     ${FONTS} ${RESET}
     body { background: ${theme.bg}; }
-    .wrap { width: 1080px; height: 1080px; display: flex; flex-direction: column; padding: 48px 56px; }
+    .wrap {
+      width: 1080px; height: 1350px;
+      display: flex; flex-direction: column;
+      padding: 60px 72px 40px;
+    }
 
-    .progress { display: flex; gap: 6px; margin-bottom: 24px; }
-    .progress .dot { height: 4px; flex: 1; border-radius: 2px; background: ${theme.border}; }
+    .progress { display: flex; gap: 8px; margin-bottom: 32px; }
+    .progress .dot { height: 5px; flex: 1; border-radius: 3px; background: ${theme.border}; }
     .progress .dot.active { background: ${theme.accent}; }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .slide-num { font-size: 14px; color: ${theme.textSecondary}; font-weight: 600; }
-    .brand { font-size: 13px; color: ${theme.textSecondary}; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+    .slide-num { font-size: 18px; color: ${theme.textSecondary}; font-weight: 700; }
+    .brand { font-size: 16px; color: ${theme.textSecondary}; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
 
-    .content { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
-    .accent-bar { width: 40px; height: 4px; background: ${theme.accent}; border-radius: 2px; }
-    .heading { font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400; color: ${theme.text}; line-height: 1.15; }
-    .body { font-size: 18px; font-weight: 400; color: ${theme.textSecondary}; line-height: 1.55; max-width: 900px; }
+    .content { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+    .accent-bar { width: 60px; height: 5px; background: ${theme.accent}; border-radius: 3px; }
+    .heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: 48px; font-weight: 400; color: ${theme.text}; line-height: 1.15;
+    }
+    .body {
+      font-size: 24px; font-weight: 400; color: ${theme.textSecondary};
+      line-height: 1.6; max-width: 920px;
+    }
 
-    .stats-row { display: flex; gap: 14px; }
-    .stat-card { background: ${theme.cardBg}; border: 1px solid ${theme.border}; border-radius: 14px; padding: 20px 24px; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .stat-number { font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400; color: ${theme.accent}; line-height: 1; margin-bottom: 4px; }
-    .stat-label { font-size: 14px; font-weight: 500; color: ${theme.textSecondary}; line-height: 1.3; }
+    .stats-row { display: flex; gap: 20px; }
+    .stat-card {
+      background: ${theme.cardBg}; border: 1px solid ${theme.border};
+      border-radius: 18px; padding: 28px 32px; flex: 1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 46px; font-weight: 400; color: ${theme.accent};
+      line-height: 1; margin-bottom: 8px;
+    }
+    .stat-label { font-size: 18px; font-weight: 500; color: ${theme.textSecondary}; line-height: 1.35; }
 
     /* Bar chart */
-    .chart-card { background: ${theme.cardBg}; border: 1px solid ${theme.border}; border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; }
+    .chart-card {
+      background: ${theme.cardBg}; border: 1px solid ${theme.border};
+      border-radius: 18px; padding: 28px 32px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex; flex-direction: column; gap: 16px;
+    }
     .bar-row { }
-    .bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .bar-label { font-size: 14px; font-weight: 600; color: ${theme.text}; }
-    .bar-value { font-size: 14px; font-weight: 700; color: ${theme.accent}; }
-    .bar-track { height: 10px; background: ${theme.accentSoft}; border-radius: 5px; overflow: hidden; }
-    .bar-fill { height: 100%; background: ${theme.accent}; border-radius: 5px; }
+    .bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .bar-label { font-size: 18px; font-weight: 700; color: ${theme.text}; }
+    .bar-value { font-size: 18px; font-weight: 800; color: ${theme.accent}; }
+    .bar-track { height: 14px; background: ${theme.accentSoft}; border-radius: 7px; overflow: hidden; }
+    .bar-fill { height: 100%; background: ${theme.accent}; border-radius: 7px; }
 
     /* Donut chart */
-    .donut-wrap { flex-direction: row; align-items: center; gap: 28px; }
-    .donut-chart { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
-    .donut-ring { width: 160px; height: 160px; border-radius: 50%; }
-    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90px; height: 90px; border-radius: 50%; background: ${theme.cardBg}; display: flex; align-items: center; justify-content: center; }
-    .donut-highlight { font-family: 'DM Serif Display', serif; font-size: 30px; color: ${theme.accent}; font-weight: 400; }
-    .donut-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .legend-item { display: flex; align-items: center; gap: 10px; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .legend-label { font-size: 14px; color: ${theme.text}; font-weight: 500; flex: 1; }
-    .legend-pct { font-size: 14px; color: ${theme.accent}; font-weight: 700; }
+    .donut-wrap { flex-direction: row; align-items: center; gap: 36px; }
+    .donut-chart { position: relative; width: 200px; height: 200px; flex-shrink: 0; }
+    .donut-ring { width: 200px; height: 200px; border-radius: 50%; }
+    .donut-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 110px; height: 110px; border-radius: 50%; background: ${theme.cardBg};
+      display: flex; align-items: center; justify-content: center;
+    }
+    .donut-highlight { font-family: 'DM Serif Display', serif; font-size: 38px; color: ${theme.accent}; font-weight: 400; }
+    .donut-legend { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .legend-item { display: flex; align-items: center; gap: 14px; }
+    .legend-dot { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+    .legend-label { font-size: 18px; color: ${theme.text}; font-weight: 500; flex: 1; }
+    .legend-pct { font-size: 18px; color: ${theme.accent}; font-weight: 800; }
 
     /* Compare chart */
     .compare-wrap { flex-direction: row; align-items: center; gap: 0; }
-    .compare-item { flex: 1; text-align: center; padding: 24px 16px; }
-    .compare-alt { background: ${theme.accentLight}; border-radius: 0 14px 14px 0; margin: -20px -24px -20px 0; padding: 40px 24px; }
-    .compare-value { font-family: 'DM Serif Display', serif; font-size: 34px; color: ${theme.accent}; font-weight: 400; margin-bottom: 6px; }
-    .compare-label { font-size: 16px; font-weight: 700; color: ${theme.text}; margin-bottom: 4px; }
-    .compare-desc { font-size: 13px; color: ${theme.textSecondary}; }
-    .compare-vs { font-size: 16px; font-weight: 700; color: ${theme.textSecondary}; padding: 0 8px; flex-shrink: 0; }
+    .compare-item { flex: 1; text-align: center; padding: 32px 20px; }
+    .compare-alt {
+      background: ${theme.accentLight}; border-radius: 0 18px 18px 0;
+      margin: -28px -32px -28px 0; padding: 56px 32px;
+    }
+    .compare-value { font-family: 'DM Serif Display', serif; font-size: 44px; color: ${theme.accent}; font-weight: 400; margin-bottom: 10px; }
+    .compare-label { font-size: 20px; font-weight: 800; color: ${theme.text}; margin-bottom: 6px; }
+    .compare-desc { font-size: 16px; color: ${theme.textSecondary}; line-height: 1.4; }
+    .compare-vs { font-size: 20px; font-weight: 800; color: ${theme.textSecondary}; padding: 0 12px; flex-shrink: 0; }
 
     /* Ranked chart */
-    .rank-row { display: flex; align-items: center; gap: 14px; padding: 8px 0; border-bottom: 1px solid ${theme.border}; }
+    .rank-row { display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid ${theme.border}; }
     .rank-row:last-child { border-bottom: none; }
-    .rank-num { font-family: 'DM Serif Display', serif; font-size: 22px; color: ${theme.accent}; font-weight: 400; width: 36px; flex-shrink: 0; }
-    .rank-label { font-size: 15px; font-weight: 600; color: ${theme.text}; flex: 1; }
-    .rank-value { font-size: 14px; font-weight: 700; color: ${theme.accent}; }
+    .rank-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: ${theme.accent}; font-weight: 400; width: 44px; flex-shrink: 0; }
+    .rank-label { font-size: 20px; font-weight: 700; color: ${theme.text}; flex: 1; }
+    .rank-value { font-size: 18px; font-weight: 800; color: ${theme.accent}; }
 
     /* Source */
-    .source-bar { background: ${theme.accentSoft}; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-    .source-icon { font-size: 11px; color: ${theme.accent}; font-weight: 700; }
-    .source-text { font-size: 12px; color: ${theme.textSecondary}; font-weight: 500; }
+    .source-bar {
+      background: ${theme.accentSoft}; border-radius: 12px;
+      padding: 14px 22px; display: flex; align-items: center; gap: 10px;
+      margin-top: 8px;
+    }
+    .source-icon { font-size: 13px; color: ${theme.accent}; font-weight: 800; letter-spacing: 1px; }
+    .source-text { font-size: 15px; color: ${theme.textSecondary}; font-weight: 500; }
   </style></head><body>
     <div class="wrap">
       <div class="progress">

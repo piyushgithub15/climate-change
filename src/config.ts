@@ -18,6 +18,7 @@ export const config = {
   facebookPageId: required('FACEBOOK_PAGE_ID'),
   accessToken: required('ACCESS_TOKEN'),
   openaiApiKey: process.env.OPENAI_API_KEY || '',
+  perplexityApiKey: process.env.PERPLEXITY_API_KEY || '',
   turso: {
     url: process.env.TURSO_URL || '',
     authToken: process.env.TURSO_AUTH_TOKEN || '',

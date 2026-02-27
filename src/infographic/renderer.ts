@@ -11,7 +11,7 @@ const TMP_DIR = path.resolve(__dirname, '..', '..', 'tmp');
  */
 async function renderSlide(browser: Browser, html: string, outputPath: string): Promise<void> {
   const page = await browser.newPage();
-  await page.setViewport({ width: 1080, height: 1080, deviceScaleFactor: 1 });
+  await page.setViewport({ width: 1080, height: 1350, deviceScaleFactor: 1 });
 
   await page.setContent(html, {
     waitUntil: 'networkidle0',
@@ -23,7 +23,7 @@ async function renderSlide(browser: Browser, html: string, outputPath: string): 
   await page.screenshot({
     path: outputPath,
     type: 'png',
-    clip: { x: 0, y: 0, width: 1080, height: 1080 },
+    clip: { x: 0, y: 0, width: 1080, height: 1350 },
   });
 
   await page.close();

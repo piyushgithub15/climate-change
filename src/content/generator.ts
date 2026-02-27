@@ -63,30 +63,36 @@ function getClient(): OpenAI {
 export async function generateContent(
   topic: ClimateTopic,
   recentPosts: { topic_id: string; title: string }[] = [],
+  researchData: string = '',
 ): Promise<GeneratedContent> {
   const client = getClient();
 
-  const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers. 
+  const currentYear = new Date().getFullYear();
+
+  const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers.
 You focus on corporate accountability, naming specific companies, CEOs, billionaires, and industry leaders responsible for climate damage.
-Always cite real statistics from reputable sources (IPCC, Carbon Disclosure Project, Climate Accountability Institute, peer-reviewed studies).
-Never fabricate numbers. Name real companies and people with verified facts.
+You have been provided with LIVE WEB RESEARCH data below — use ONLY the facts, statistics, and sources from that research. Do NOT make up or hallucinate any numbers. If a stat is in the research, use it with its exact source. If something is not in the research, do not invent it.
 Your tone is direct, factual, and educational — like a mini documentary in slides.`;
 
   const recentSection = recentPosts.length > 0
     ? `\n\nDO NOT repeat any of these angles — they were already posted in the last 7 days:\n${recentPosts.map(p => `- "${p.title}"`).join('\n')}\n\nPick a COMPLETELY DIFFERENT angle, fact, or story.`
     : '';
 
+  const researchSection = researchData
+    ? `\n\n=== LIVE WEB RESEARCH (use these facts and sources) ===\n${researchData}\n=== END RESEARCH ===`
+    : '';
+
   const userPrompt = `Create a 4-slide Instagram carousel explainer.
 
 Theme: ${topic.theme}
-Context: ${topic.description}
+${researchSection}
 ${recentSection}
 
-Pick a FRESH, SPECIFIC angle. Don't be generic — zoom into one surprising fact, one scandal, one comparison, or one person/company. Use real, verified data from reputable sources.
+Using the research data above, pick the most compelling angle — one surprising fact, scandal, comparison, or company/person. Be SPECIFIC, not generic. Use ONLY real data from the research.
 
 IMPORTANT RULES:
-1. Every slide MUST have a "source" field with the actual data source (e.g., "CDP 2024", "IPCC AR6", "Oxfam 2023").
-2. Every slide MUST have a primary stat and a secondary stat.
+1. Every slide MUST have a "source" field with a REAL, SPECIFIC data source AND year from the research (e.g., "IEA World Energy Outlook ${currentYear}", "UNEP Emissions Gap Report ${currentYear - 1}").
+2. Every slide MUST have a primary stat and a secondary stat — taken directly from the research data.
 3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 4 types:
 
 CHART TYPES (use each at most once, vary across slides):
