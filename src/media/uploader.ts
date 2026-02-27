@@ -32,12 +32,16 @@ export async function uploadToCloudinary(filePath: string): Promise<string> {
 
   const isVideo = /\.(mp4|mov|avi|webm)$/i.test(filePath);
 
-  const result: UploadApiResponse = await cloudinary.uploader.upload(filePath, {
-    resource_type: isVideo ? 'video' : 'image',
-    folder: 'instagram-autoposter',
-  });
-
-  return result.secure_url;
+  try {
+    const result: UploadApiResponse = await cloudinary.uploader.upload(filePath, {
+      resource_type: isVideo ? 'video' : 'image',
+      folder: 'instagram-autoposter',
+    });
+    return result.secure_url;
+  } catch (err: any) {
+    const detail = err?.message || err?.error?.message || JSON.stringify(err);
+    throw new Error(`Cloudinary upload failed for ${filePath}: ${detail}`);
+  }
 }
 
 /**

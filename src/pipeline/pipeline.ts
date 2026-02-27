@@ -78,9 +78,14 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
 
     console.log(`[pipeline] === Carousel complete for "${topic.theme}" ===\n`);
     return { postId: post.id, topicId: topic.id };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch (err: any) {
+    const message = err instanceof Error
+      ? err.message
+      : (typeof err === 'object' ? JSON.stringify(err) : String(err));
     console.error(`[pipeline] Failed:`, message);
+    if (err?.response?.data) {
+      console.error(`[pipeline] API response:`, JSON.stringify(err.response.data));
+    }
     await updatePipelineLog(logId, {
       status: 'failed',
       error_message: message,

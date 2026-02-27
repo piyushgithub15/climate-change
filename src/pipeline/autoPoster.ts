@@ -14,8 +14,10 @@ async function triggerPipeline() {
   try {
     const result = await runPipeline();
     console.log(`[auto-poster] Auto-post completed: topic=${result.topicId}, post=#${result.postId}`);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch (err: any) {
+    const message = err instanceof Error
+      ? err.message
+      : (typeof err === 'object' ? JSON.stringify(err) : String(err));
     console.error('[auto-poster] Auto-post failed:', message);
   } finally {
     isRunning = false;
