@@ -142,6 +142,27 @@ export async function publishCarousel(mediaUrls: string[], caption: string): Pro
     childIds.push(id);
   }
   const carouselId = await createCarouselContainer(childIds, caption);
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      const status = await checkContainerStatus(carouselId);
+      if (status === 'FINISHED') {
+        return publishContainer(carouselId);
+      }
+      if (status === 'ERROR') {
+        throw new Error(`Carousel container ${carouselId} failed processing`);
+      }
+    } catch (err: any) {
+      const msg = err?.response?.data?.error?.error_user_msg || err?.message || '';
+      if (msg.includes('not ready') || msg.includes('not available')) {
+        console.log(`[instagram] Media not ready, waiting 5s (attempt ${attempt + 1}/10)...`);
+      } else {
+        throw err;
+      }
+    }
+    await sleep(5_000);
+  }
+
   return publishContainer(carouselId);
 }
 
