@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { config } from '../config';
 import { ClimateTopic } from './topics';
 import { ContentArchetype } from './archetypes';
+import { CaptionStyle, pickCaptionStyle } from './caption-styles';
 
 export interface BarDataItem {
   label: string;
@@ -27,7 +28,20 @@ export interface RankedItem {
   value: string;
 }
 
-export type ChartType = 'bars' | 'donut' | 'compare' | 'ranked';
+export interface TrendPoint {
+  label: string;
+  value: number;
+  displayValue: string;
+}
+
+export interface PictogramData {
+  filled: number;
+  total: number;
+  filledLabel: string;
+  emptyLabel: string;
+}
+
+export type ChartType = 'bars' | 'donut' | 'compare' | 'ranked' | 'trend' | 'pictogram';
 
 export interface SlideContent {
   heading: string;
@@ -41,6 +55,9 @@ export interface SlideContent {
   donut?: DonutSegment[];
   compare?: CompareItem[];
   ranked?: RankedItem[];
+  trend?: TrendPoint[];
+  trendLabel?: string;
+  pictogram?: PictogramData;
   source: string;
 }
 
@@ -87,10 +104,12 @@ export async function generateContent(
   recentPosts: { topic_id: string; title: string }[] = [],
   researchData: string = '',
   archetype?: ContentArchetype,
+  captionStyle?: CaptionStyle,
 ): Promise<GeneratedContent> {
   const client = getClient();
 
   const currentYear = new Date().getFullYear();
+  const selectedCaptionStyle = captionStyle ?? pickCaptionStyle(archetype?.id);
 
   const toneDirective = archetype
     ? `\nTONE: ${archetype.toneDirective}`
@@ -152,9 +171,9 @@ ${archetypeSection}
 IMPORTANT RULES:
 1. Every slide MUST have a "source" field with a REAL, SPECIFIC data source AND year from the research (e.g., "IEA World Energy Outlook ${currentYear}", "UNEP Emissions Gap Report ${currentYear - 1}").
 2. Every slide MUST have a primary stat and a secondary stat — taken directly from the research data.
-3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 4 types:
+3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 6 types:
 
-CHART TYPES (use each at most once, vary across slides):
+CHART TYPES (use each at most once, vary across slides — you MUST use at least 3 different types):
 
 A) "bars" — horizontal bar chart comparing entities:
    "chartType": "bars",
@@ -188,6 +207,30 @@ D) "ranked" — numbered ranking list (3-5 items):
      { "rank": 3, "label": "Gazprom", "value": "43.23 Gt CO2" }
    ]
 
+E) "trend" — line/area chart showing change over time (3-5 data points):
+   "chartType": "trend",
+   "trendLabel": "Global Chemical Production (Million Tonnes)",
+   "trend": [
+     { "label": "2000", "value": 25, "displayValue": "1.2 Gt" },
+     { "label": "2010", "value": 40, "displayValue": "2.1 Gt" },
+     { "label": "2020", "value": 65, "displayValue": "3.4 Gt" },
+     { "label": "2030", "value": 85, "displayValue": "4.5 Gt" }
+   ]
+   (value is 0-100 for Y-axis position. displayValue is the REAL number shown on each point. trendLabel is the chart title describing what the axis measures. GREAT for timeline archetypes.)
+
+F) "pictogram" — icon grid showing proportion (e.g., 7 out of 10 people affected):
+   "chartType": "pictogram",
+   "pictogram": {
+     "filled": 7,
+     "total": 10,
+     "filledLabel": "Affected by flooding",
+     "emptyLabel": "Not affected"
+   }
+   (filled/total are counts 1-10. GREAT for human-scale proportions like "7 in 10 people" or "3 out of 5 countries".)
+
+CAPTION STYLE FOR THIS POST: "${selectedCaptionStyle.name}" — ${selectedCaptionStyle.purpose}
+${selectedCaptionStyle.prompt}
+
 Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
 {
   "coverTitle": "Bold title (max 8 words)",
@@ -200,14 +243,14 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
       "statLabel": "What it represents",
       "secondaryStat": "Secondary number",
       "secondaryStatLabel": "What it means",
-      "chartType": "one of: bars, donut, compare, ranked",
-      "bars or donut or compare or ranked": "array matching the chosen chartType",
+      "chartType": "one of: bars, donut, compare, ranked, trend, pictogram",
+      "[chartType key]": "data array/object matching the chosen chartType",
       "source": "Specific data source (e.g., 'IPCC AR6, 2023')"
     }
   ],
   "ctaText": "",
   "source": "Overall sources",
-  "caption": "Engaging 3-4 sentence caption. Use a DIFFERENT opening each time — NEVER use 'Swipe to learn more'. Instead vary between: a provocative question, a shocking stat, 'Here is what nobody tells you about...', 'This might change how you see...', a bold claim, or a short story hook. Do NOT include any hashtags — they will be added separately.",
+  "caption": "Write this using the CAPTION STYLE instructions above. Do NOT include any hashtags — they will be added separately.",
   "imagePrompt": ""
 }`;
 

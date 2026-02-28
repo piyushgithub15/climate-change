@@ -7,6 +7,7 @@ import { renderCarouselSlides } from '../infographic/renderer';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../media/uploader';
 import { publishCarousel, checkRateLimit } from '../instagram/api';
 import { pickArchetype, ContentArchetype } from '../content/archetypes';
+import { pickCaptionStyle } from '../content/caption-styles';
 import {
   createPost,
   createPipelineLog,
@@ -43,8 +44,9 @@ export async function runPipeline(forEvening = false): Promise<{ postId: number;
   const topic = await pickNextTopic();
   const archetype = pickArchetype(forEvening);
   const style = archetype.preferredStyles[Math.floor(Math.random() * archetype.preferredStyles.length)];
+  const captionStyle = pickCaptionStyle(archetype.id);
   console.log(`\n[pipeline] === Starting carousel pipeline: "${topic.theme}" (${topic.id}) ===`);
-  console.log(`[pipeline] Archetype: ${archetype.name} | Template: ${style}`);
+  console.log(`[pipeline] Archetype: ${archetype.name} | Template: ${style} | Caption: ${captionStyle.name}`);
 
   const logId = await createPipelineLog(topic.id);
 
@@ -58,7 +60,7 @@ export async function runPipeline(forEvening = false): Promise<{ postId: number;
     if (recentPosts.length > 0) {
       console.log(`[pipeline] Avoiding ${recentPosts.length} recent angles from the last 7 days`);
     }
-    const content = await generateContent(topic, recentPosts, researchData, archetype);
+    const content = await generateContent(topic, recentPosts, researchData, archetype, captionStyle);
     const slideCount = content.slides.length + 1;
     console.log(`[pipeline] Content generated — "${content.coverTitle}" (${slideCount} slides)`);
 

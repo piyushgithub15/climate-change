@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getRecentPipelineLogs, getRecentPostTitles } from '../db/database';
-import { triggerPipeline } from '../pipeline/autoPoster';
+import { runPipeline } from '../pipeline/pipeline';
 import { CLIMATE_TOPICS } from '../content/topics';
 import { config } from '../config';
 import { generateContent } from '../content/generator';
@@ -51,9 +51,13 @@ router.post('/pipeline/generate', async (_req: Request, res: Response) => {
   }
 
   try {
-    res.json({ message: 'Pipeline started — check the logs for progress' });
-    triggerPipeline().catch(err => {
-      console.error('[api] Pipeline trigger failed:', err);
+    res.json({ message: 'Pipeline started — generating immediately (no delay)' });
+    const hour = new Date().getHours();
+    const forEvening = hour >= 14;
+    runPipeline(forEvening).then(result => {
+      console.log(`[api] Pipeline completed: topic=${result.topicId}, post=#${result.postId}`);
+    }).catch(err => {
+      console.error('[api] Pipeline failed:', err instanceof Error ? err.message : String(err));
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

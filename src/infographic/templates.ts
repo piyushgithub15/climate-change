@@ -221,11 +221,96 @@ function renderRankedChart(slide: SlideContent, theme: ColorTheme): string {
   `;
 }
 
+function renderTrendChart(slide: SlideContent, theme: ColorTheme): string {
+  if (!slide.trend || slide.trend.length === 0) return '';
+  const points = slide.trend;
+  const title = slide.trendLabel || '';
+  const maxVal = Math.max(...points.map(p => p.value));
+  const minVal = Math.min(...points.map(p => p.value));
+  const range = maxVal - minVal || 1;
+  const svgW = 860;
+  const svgH = 280;
+  const padX = 20;
+  const padY = 40;
+  const plotW = svgW - padX * 2;
+  const plotH = svgH - padY * 2;
+
+  const coords = points.map((p, i) => {
+    const x = padX + (i / (points.length - 1)) * plotW;
+    const y = padY + plotH - ((p.value - minVal) / range) * plotH;
+    return { x, y, label: p.label, value: p.value, displayValue: p.displayValue || String(p.value) };
+  });
+
+  const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+  const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${svgH - padY} L ${coords[0].x} ${svgH - padY} Z`;
+
+  return `
+    <div class="chart-card" style="padding: 30px 20px;">
+      ${title ? `<div style="font-size:22px; font-weight:700; color:${theme.text}; margin-bottom:8px; padding:0 10px; font-family:'DM Sans',sans-serif;">${esc(title)}</div>` : ''}
+      <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block; width:100%; height:auto;">
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="${theme.accent}" stop-opacity="0.03"/>
+          </linearGradient>
+        </defs>
+        <line x1="${padX}" y1="${svgH - padY}" x2="${svgW - padX}" y2="${svgH - padY}" stroke="${theme.border}" stroke-width="1"/>
+        <path d="${areaPath}" fill="url(#areaGrad)"/>
+        <path d="${linePath}" fill="none" stroke="${theme.accent}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        ${coords.map(c => `
+          <circle cx="${c.x}" cy="${c.y}" r="6" fill="${theme.accent}"/>
+          <circle cx="${c.x}" cy="${c.y}" r="3" fill="${theme.cardBg}"/>
+          <text x="${c.x}" y="${svgH - 5}" text-anchor="middle" fill="${theme.textSecondary}" font-size="18" font-family="'DM Sans',sans-serif">${c.label}</text>
+          <text x="${c.x}" y="${c.y - 16}" text-anchor="middle" fill="${theme.accent}" font-size="17" font-weight="700" font-family="'DM Sans',sans-serif">${c.displayValue}</text>
+        `).join('')}
+      </svg>
+    </div>
+  `;
+}
+
+function renderPictogramChart(slide: SlideContent, theme: ColorTheme): string {
+  if (!slide.pictogram) return '';
+  const { filled, total, filledLabel, emptyLabel } = slide.pictogram;
+  const icons: string[] = [];
+  for (let i = 0; i < total; i++) {
+    const isFilled = i < filled;
+    const color = isFilled ? theme.accent : theme.border;
+    const opacity = isFilled ? '1' : '0.3';
+    icons.push(`
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="${color}" opacity="${opacity}">
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M12 13c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
+        </svg>
+      </div>
+    `);
+  }
+  return `
+    <div class="chart-card" style="padding: 30px; display:flex; flex-direction:column; align-items:center; gap:20px;">
+      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+        ${icons.join('')}
+      </div>
+      <div style="display:flex; gap:28px; align-items:center; font-size:20px; font-family:'DM Sans',sans-serif;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:14px; height:14px; border-radius:50%; background:${theme.accent};"></div>
+          <span style="color:${theme.text};">${filled}/${total} ${filledLabel}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:14px; height:14px; border-radius:50%; background:${theme.border};"></div>
+          <span style="color:${theme.textSecondary};">${total - filled}/${total} ${emptyLabel}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderChart(slide: SlideContent, theme: ColorTheme): string {
   switch (slide.chartType) {
     case 'donut': return renderDonutChart(slide, theme);
     case 'compare': return renderCompareChart(slide, theme);
     case 'ranked': return renderRankedChart(slide, theme);
+    case 'trend': return renderTrendChart(slide, theme);
+    case 'pictogram': return renderPictogramChart(slide, theme);
     case 'bars':
     default: return renderBarsChart(slide, theme);
   }
@@ -246,6 +331,7 @@ function renderFactSlide(
   theme: ColorTheme,
 ): string {
   const chartHtml = renderChart(slide, theme);
+  const layout = slideNum % 3; // 0=default, 1=chart-first, 2=big-stat
 
   const statsHtml = `
     <div class="stats-row">
@@ -261,6 +347,43 @@ function renderFactSlide(
       ` : ''}
     </div>
   `;
+
+  const bigStatHtml = `
+    <div class="big-stat-hero">
+      <div class="big-stat-number">${esc(slide.stat)}</div>
+      <div class="big-stat-label">${esc(slide.statLabel)}</div>
+    </div>
+  `;
+
+  let contentBlock: string;
+  if (layout === 1) {
+    contentBlock = `
+      <div class="data-area chart-first-layout">
+        ${chartHtml}
+      </div>
+      <h2 class="heading heading-sm">${esc(slide.heading)}</h2>
+      <p class="body">${esc(slide.body)}</p>
+      ${statsHtml}
+    `;
+  } else if (layout === 2) {
+    contentBlock = `
+      ${bigStatHtml}
+      <h2 class="heading heading-sm">${esc(slide.heading)}</h2>
+      <p class="body">${esc(slide.body)}</p>
+      <div class="data-area">
+        ${chartHtml}
+      </div>
+    `;
+  } else {
+    contentBlock = `
+      <h2 class="heading">${esc(slide.heading)}</h2>
+      <p class="body">${esc(slide.body)}</p>
+      <div class="data-area">
+        ${statsHtml}
+        ${chartHtml}
+      </div>
+    `;
+  }
 
   return `<!DOCTYPE html><html><head><style>
     ${FONTS} ${RESET}
@@ -285,12 +408,28 @@ function renderFactSlide(
       font-size: 86px; font-weight: 400; color: ${theme.text}; line-height: 1.08;
       margin-bottom: 18px;
     }
+    .heading-sm { font-size: 62px; margin-bottom: 10px; }
     .body {
       font-size: 28px; font-weight: 400; color: ${theme.textSecondary};
       line-height: 1.55; margin-bottom: 28px;
     }
 
     .data-area { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+    .chart-first-layout { margin-bottom: 20px; }
+
+    /* Big stat hero */
+    .big-stat-hero {
+      background: ${theme.accent}; border-radius: 20px; padding: 48px 40px;
+      margin-bottom: 24px; text-align: center;
+    }
+    .big-stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 110px; font-weight: 400; color: ${theme.bg};
+      line-height: 1; margin-bottom: 10px;
+    }
+    .big-stat-label {
+      font-size: 26px; font-weight: 600; color: ${theme.bg}; opacity: 0.85;
+    }
 
     .stats-row { display: flex; gap: 16px; }
     .stat-card {
@@ -369,12 +508,7 @@ function renderFactSlide(
         <span class="brand">Climate Watch</span>
       </div>
       <div class="accent-bar"></div>
-      <h2 class="heading">${esc(slide.heading)}</h2>
-      <p class="body">${esc(slide.body)}</p>
-      <div class="data-area">
-        ${statsHtml}
-        ${chartHtml}
-      </div>
+      ${contentBlock}
       <div class="source-bar">
         <span class="source-icon">SOURCE</span>
         <span class="source-text">${esc(slide.source || '')}</span>
