@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { config } from '../config';
 import { ClimateTopic } from './topics';
+import { ContentArchetype } from './archetypes';
 
 export interface BarDataItem {
   label: string;
@@ -53,6 +54,27 @@ export interface GeneratedContent {
   source: string;
 }
 
+const HASHTAG_POOL = [
+  '#ClimateChange', '#ClimateCrisis', '#GlobalWarming', '#ClimateAction',
+  '#ClimateJustice', '#ActOnClimate', '#FridaysForFuture', '#ClimateEmergency',
+  '#Sustainability', '#SustainableLiving', '#GreenFuture', '#EcoFriendly',
+  '#RenewableEnergy', '#CleanEnergy', '#SolarPower', '#WindEnergy',
+  '#CarbonFootprint', '#NetZero', '#ZeroEmissions', '#GreenNewDeal',
+  '#EnvironmentalJustice', '#SaveThePlanet', '#EarthFirst', '#ProtectOurPlanet',
+  '#Deforestation', '#OceanPollution', '#PlasticFree', '#WaterCrisis',
+  '#AirPollution', '#Biodiversity', '#WildlifeProtection', '#EndangeredSpecies',
+  '#FossilFuels', '#BigOil', '#CorporateGreed', '#CorporateAccountability',
+  '#GreenEnergy', '#EcoWarrior', '#ClimateFacts', '#EnvironmentMatters',
+  '#PlanetOverProfit', '#ClimateScience', '#1Point5Degrees', '#ParisAgreement',
+  '#CircularEconomy', '#GreenTech', '#UrbanSustainability', '#FoodSecurity',
+  '#HeatWave', '#SeaLevelRise',
+];
+
+function pickRandomHashtags(count: number = 10): string {
+  const shuffled = [...HASHTAG_POOL].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count).join(' ');
+}
+
 function getClient(): OpenAI {
   if (!config.openaiApiKey) {
     throw new Error('OPENAI_API_KEY is not set in .env');
@@ -64,15 +86,27 @@ export async function generateContent(
   topic: ClimateTopic,
   recentPosts: { topic_id: string; title: string }[] = [],
   researchData: string = '',
+  archetype?: ContentArchetype,
 ): Promise<GeneratedContent> {
   const client = getClient();
 
   const currentYear = new Date().getFullYear();
 
-  const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers.
+  const toneDirective = archetype
+    ? `\nTONE: ${archetype.toneDirective}`
+    : '\nYour tone is direct, factual, and educational — like a mini documentary in slides.';
+
+  const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers for a GLOBAL audience.
 You focus on corporate accountability, naming specific companies, CEOs, billionaires, and industry leaders responsible for climate damage.
 You have been provided with LIVE WEB RESEARCH data below — use ONLY the facts, statistics, and sources from that research. Do NOT make up or hallucinate any numbers. If a stat is in the research, use it with its exact source. If something is not in the research, do not invent it.
-Your tone is direct, factual, and educational — like a mini documentary in slides.
+
+GLOBAL PERSPECTIVE (CRITICAL):
+- Frame everything through a GLOBAL NORTH vs GLOBAL SOUTH lens — who causes emissions vs who suffers the consequences.
+- Use COUNTRY-LEVEL data (e.g., "India", "Bangladesh", "USA", "Germany", "Nigeria") — NOT community-level or neighborhood-level data.
+- Compare nations and continents, not neighborhoods. Example: "The US emits 15 tonnes CO2 per capita while Bangladesh emits 0.5 — yet Bangladesh loses 4% of GDP annually to flooding."
+- Name countries, multinational corporations, and world leaders — not local communities or city-level issues.
+- Your audience is international. Make every post relevant to someone in India, Brazil, Europe, or Africa — not just one country.
+${toneDirective}
 
 CRITICAL WRITING RULES:
 
@@ -81,9 +115,6 @@ CRITICAL WRITING RULES:
 BANNED VAGUE PHRASES (never use these): "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future".
 
 REQUIRED: Replace vague phrases with SPECIFIC consequences like: "children developing chronic lung disease from pesticide exposure", "families spending 40% of income on food that cost 15% a decade ago", "200,000 people fleeing flooded coastlines each year", "1 in 3 coral reefs bleached beyond recovery", "farm workers collapsing from 50°C heatwaves".
-
-BAD body: "138 million children are in child labor. This highlights stalled progress. These workers face hazardous conditions, leading to health issues and disrupted education."
-GOOD body: "138 million children are trapped in labor — half in hazardous work with toxic chemicals and heavy machinery. Since 2016, progress has completely stalled, with 8.4 million more children forced into work. These children suffer chronic respiratory disease, pesticide poisoning, and permanent injuries, while being denied the education that could lift their families out of poverty."
 
 2. Use NUMBERS to quantify consequences whenever possible (e.g., "killing 15,000 people annually", "displacing 3.5 million families", "destroying $200 billion in crops").`;
 
@@ -95,17 +126,28 @@ GOOD body: "138 million children are trapped in labor — half in hazardous work
     ? `\n\n=== LIVE WEB RESEARCH (use these facts and sources) ===\n${researchData}\n=== END RESEARCH ===`
     : '';
 
+  const archetypeSection = archetype
+    ? `\n\nCONTENT ARCHETYPE: "${archetype.name}" (Goal: ${archetype.goal})
+
+COVER SLIDE:
+${archetype.coverPrompt}
+
+SLIDE STRUCTURE (follow this EXACTLY):
+${archetype.slidePrompt}
+
+BEFORE RESPONDING: Re-read each body. If any uses vague language — REWRITE with specific, quantified consequences.`
+    : `\nUsing the research data above, pick the most compelling angle — one surprising fact, scandal, comparison, or company/person. Be SPECIFIC, not generic. Use ONLY real data from the research.
+
+FOR EVERY SLIDE BODY: Follow this structure — (1) state the fact with a specific number, (2) explain why it's significant, (3) describe the real human/environmental cost.
+
+BEFORE RESPONDING: Re-read each body. If any uses vague language — REWRITE with specific, quantified consequences.`;
+
   const userPrompt = `Create a 4-slide Instagram carousel explainer.
 
 Theme: ${topic.theme}
 ${researchSection}
 ${recentSection}
-
-Using the research data above, pick the most compelling angle — one surprising fact, scandal, comparison, or company/person. Be SPECIFIC, not generic. Use ONLY real data from the research.
-
-FOR EVERY SLIDE BODY: Follow this structure — (1) state the fact with a specific number, (2) explain why it's significant, (3) describe the real human/environmental cost. Every body MUST end with a concrete consequence people can visualize — deaths, displacement, destroyed ecosystems, economic losses, health crises.
-
-BEFORE RESPONDING: Re-read each body you wrote. If any body uses vague language like "threatens communities", "contributes to problems", "worsening conditions", or "negative effects" — REWRITE it with a specific, quantified consequence from the research data.
+${archetypeSection}
 
 IMPORTANT RULES:
 1. Every slide MUST have a "source" field with a REAL, SPECIFIC data source AND year from the research (e.g., "IEA World Energy Outlook ${currentYear}", "UNEP Emissions Gap Report ${currentYear - 1}").
@@ -153,7 +195,7 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   "slides": [
     {
       "heading": "Heading (max 6 words)",
-      "body": "2-3 sentences: [1] State the fact with a number. [2] Explain why alarming. [3] Name a SPECIFIC consequence with a number — e.g. 'killing X people', 'displacing X families', 'destroying $Xbn in crops'. NEVER use vague phrases like 'health issues' or 'long-term impacts'.",
+      "body": "2-3 sentences with specific consequences and numbers. NEVER use vague phrases.",
       "stat": "Primary number",
       "statLabel": "What it represents",
       "secondaryStat": "Secondary number",
@@ -165,7 +207,7 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   ],
   "ctaText": "",
   "source": "Overall sources",
-  "caption": "Engaging 3-4 sentence caption. Start with 'Swipe to learn more'. End with 10-12 hashtags.",
+  "caption": "Engaging 3-4 sentence caption. Use a DIFFERENT opening each time — NEVER use 'Swipe to learn more'. Instead vary between: a provocative question, a shocking stat, 'Here is what nobody tells you about...', 'This might change how you see...', a bold claim, or a short story hook. Do NOT include any hashtags — they will be added separately.",
   "imagePrompt": ""
 }`;
 
@@ -182,17 +224,24 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   const raw = response.choices[0]?.message?.content?.trim();
   if (!raw) throw new Error('Empty response from GPT-4o');
 
+  let parsed: GeneratedContent;
   try {
-    const parsed = JSON.parse(raw) as GeneratedContent;
+    parsed = JSON.parse(raw) as GeneratedContent;
     if (!parsed.coverTitle || !parsed.slides || !parsed.caption) {
       throw new Error('Missing required fields in GPT response');
     }
-    return parsed;
   } catch (err) {
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]) as GeneratedContent;
+      parsed = JSON.parse(jsonMatch[0]) as GeneratedContent;
+    } else {
+      throw new Error(`Failed to parse GPT-4o response: ${err}`);
     }
-    throw new Error(`Failed to parse GPT-4o response: ${err}`);
   }
+
+  const captionWithoutTags = parsed.caption.replace(/#\w+/g, '').replace(/\s+/g, ' ').trim();
+  const hashtagCount = 8 + Math.floor(Math.random() * 5); // 8-12 hashtags
+  parsed.caption = `${captionWithoutTags}\n\n${pickRandomHashtags(hashtagCount)}`;
+
+  return parsed;
 }

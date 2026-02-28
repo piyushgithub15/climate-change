@@ -199,6 +199,15 @@ export async function getLastUsedTopicId(): Promise<string | undefined> {
   return row?.topic_id;
 }
 
+export async function getLastPipelineRunTime(): Promise<Date | null> {
+  const result = await getDb().execute(
+    "SELECT created_at FROM pipeline_log ORDER BY created_at DESC LIMIT 1"
+  );
+  const row = result.rows[0] as unknown as { created_at: string } | undefined;
+  if (!row?.created_at) return null;
+  return new Date(row.created_at + 'Z');
+}
+
 export async function getRecentPostTitles(days = 7): Promise<{ topic_id: string; title: string }[]> {
   const result = await getDb().execute({
     sql: `SELECT topic_id, content_json FROM pipeline_log

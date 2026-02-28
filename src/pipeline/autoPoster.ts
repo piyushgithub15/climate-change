@@ -4,6 +4,12 @@ import { runPipeline } from './pipeline';
 
 let isRunning = false;
 
+function randomOffsetMs(): number {
+  const maxOffsetMin = 15;
+  const offsetMin = Math.floor(Math.random() * (maxOffsetMin * 2 + 1)) - maxOffsetMin;
+  return offsetMin * 60 * 1000;
+}
+
 async function triggerPipeline() {
   if (isRunning) {
     console.log('[auto-poster] Pipeline already running, skipping');
@@ -11,8 +17,19 @@ async function triggerPipeline() {
   }
   isRunning = true;
 
+  const delayMs = randomOffsetMs();
+  const delayMin = Math.round(delayMs / 60000);
+  if (delayMs > 0) {
+    console.log(`[auto-poster] Random delay: ${delayMin} minutes to appear more human`);
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+  } else if (delayMs < 0) {
+    console.log(`[auto-poster] Posting ${Math.abs(delayMin)} minutes early for natural timing`);
+  }
+
   try {
-    const result = await runPipeline();
+    const hour = new Date().getHours();
+    const forEvening = hour >= 14;
+    const result = await runPipeline(forEvening);
     console.log(`[auto-poster] Auto-post completed: topic=${result.topicId}, post=#${result.postId}`);
   } catch (err: any) {
     const message = err instanceof Error
@@ -39,7 +56,7 @@ export function startAutoPoster(): void {
   cron.schedule(eveningCron, triggerPipeline, { timezone });
 
   console.log(
-    `[auto-poster] Scheduled at ${morningHour}:00 and ${eveningHour}:00 (${timezone})`
+    `[auto-poster] Scheduled at ~${morningHour}:00 and ~${eveningHour}:00 ±15min (${timezone})`
   );
 }
 

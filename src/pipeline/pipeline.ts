@@ -3,9 +3,10 @@ import { CLIMATE_TOPICS } from '../content/topics';
 import { generateContent } from '../content/generator';
 import { researchTopic } from '../content/researcher';
 import { fetchUnsplashImage } from '../content/unsplash';
-import { renderCarouselSlides, pickTemplateStyle } from '../infographic/renderer';
+import { renderCarouselSlides } from '../infographic/renderer';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../media/uploader';
-import { publishCarousel } from '../instagram/api';
+import { publishCarousel, checkRateLimit } from '../instagram/api';
+import { pickArchetype, ContentArchetype } from '../content/archetypes';
 import {
   createPost,
   createPipelineLog,
@@ -13,7 +14,11 @@ import {
   updatePostStatus,
   getLastUsedTopicId,
   getRecentPostTitles,
+  getLastPipelineRunTime,
 } from '../db/database';
+
+const MAX_DAILY_POSTS = 20;
+const COOLDOWN_MINUTES = 5;
 
 async function pickNextTopic(): Promise<typeof CLIMATE_TOPICS[number]> {
   const lastUsedId = await getLastUsedTopicId();
@@ -24,11 +29,22 @@ async function pickNextTopic(): Promise<typeof CLIMATE_TOPICS[number]> {
   return CLIMATE_TOPICS[nextIndex];
 }
 
-export async function runPipeline(): Promise<{ postId: number; topicId: string }> {
+export async function runPipeline(forEvening = false): Promise<{ postId: number; topicId: string }> {
+  const lastRun = await getLastPipelineRunTime();
+  if (lastRun) {
+    const elapsedMs = Date.now() - lastRun.getTime();
+    const cooldownMs = COOLDOWN_MINUTES * 60 * 1000;
+    if (elapsedMs < cooldownMs) {
+      const waitSec = Math.ceil((cooldownMs - elapsedMs) / 1000);
+      throw new Error(`Pipeline cooldown active — try again in ${waitSec}s to prevent duplicate posts`);
+    }
+  }
+
   const topic = await pickNextTopic();
-  const style = pickTemplateStyle();
+  const archetype = pickArchetype(forEvening);
+  const style = archetype.preferredStyles[Math.floor(Math.random() * archetype.preferredStyles.length)];
   console.log(`\n[pipeline] === Starting carousel pipeline: "${topic.theme}" (${topic.id}) ===`);
-  console.log(`[pipeline] Template style: ${style}`);
+  console.log(`[pipeline] Archetype: ${archetype.name} | Template: ${style}`);
 
   const logId = await createPipelineLog(topic.id);
 
@@ -42,7 +58,7 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
     if (recentPosts.length > 0) {
       console.log(`[pipeline] Avoiding ${recentPosts.length} recent angles from the last 7 days`);
     }
-    const content = await generateContent(topic, recentPosts, researchData);
+    const content = await generateContent(topic, recentPosts, researchData, archetype);
     const slideCount = content.slides.length + 1;
     console.log(`[pipeline] Content generated — "${content.coverTitle}" (${slideCount} slides)`);
 
@@ -73,6 +89,19 @@ export async function runPipeline(): Promise<{ postId: number; topicId: string }
     }
 
     console.log('[pipeline] Step 6/6: Publishing carousel to Instagram...');
+
+    try {
+      const rateLimit = await checkRateLimit();
+      const usage = rateLimit.quota_usage ?? 0;
+      console.log(`[pipeline] Rate limit check: ${usage}/${MAX_DAILY_POSTS} posts used (IG limit: 25)`);
+      if (usage >= MAX_DAILY_POSTS) {
+        throw new Error(`Daily post limit reached (${usage}/25). Skipping publish to protect your account.`);
+      }
+    } catch (rlErr: any) {
+      if (rlErr.message?.includes('Daily post limit')) throw rlErr;
+      console.warn(`[pipeline] Rate limit check failed (${rlErr.message}), proceeding cautiously`);
+    }
+
     const igMediaId = await publishCarousel(publicUrls, content.caption);
     console.log(`[pipeline] Published! IG Media ID: ${igMediaId}`);
 
