@@ -10,7 +10,7 @@ function randomOffsetMs(): number {
   return offsetMin * 60 * 1000;
 }
 
-async function triggerPipeline() {
+async function triggerPipeline(slotIndex = 0) {
   if (isRunning) {
     console.log('[auto-poster] Pipeline already running, skipping');
     return;
@@ -27,10 +27,8 @@ async function triggerPipeline() {
   }
 
   try {
-    const hour = new Date().getHours();
-    const forEvening = hour >= 14;
-    const result = await runPipeline(forEvening);
-    console.log(`[auto-poster] Auto-post completed: topic=${result.topicId}, post=#${result.postId}`);
+    const result = await runPipeline(slotIndex);
+    console.log(`[auto-poster] Auto-post completed: slot=${slotIndex}, topic=${result.topicId}, post=#${result.postId}`);
   } catch (err: any) {
     const message = err instanceof Error
       ? err.message
@@ -42,21 +40,21 @@ async function triggerPipeline() {
 }
 
 export function startAutoPoster(): void {
-  const { morningHour, eveningHour, timezone } = config.pipeline;
+  const { postingHours, timezone } = config.pipeline;
 
   if (!config.openaiApiKey) {
     console.log('[auto-poster] Skipped — OPENAI_API_KEY not configured');
     return;
   }
 
-  const morningCron = `0 ${morningHour} * * *`;
-  const eveningCron = `0 ${eveningHour} * * *`;
+  postingHours.forEach((hour, index) => {
+    const cronExpr = `0 ${hour} * * *`;
+    cron.schedule(cronExpr, () => triggerPipeline(index), { timezone });
+  });
 
-  cron.schedule(morningCron, triggerPipeline, { timezone });
-  cron.schedule(eveningCron, triggerPipeline, { timezone });
-
+  const schedule = postingHours.map(h => `${h}:00`).join(', ');
   console.log(
-    `[auto-poster] Scheduled at ~${morningHour}:00 and ~${eveningHour}:00 ±15min (${timezone})`
+    `[auto-poster] Scheduled ${postingHours.length} daily posts at ${schedule} ±15min (${timezone})`
   );
 }
 

@@ -5,13 +5,14 @@ import { GeneratedContent } from '../content/generator';
 import { renderAllSlides } from './templates';
 import { renderNoirSlides } from './templates-noir';
 import { renderEditorialSlides } from './templates-editorial';
+import { renderBrutalistSlides } from './templates-brutalist';
 
-export type TemplateStyle = 'clean' | 'noir' | 'editorial';
+export type TemplateStyle = 'clean' | 'noir' | 'editorial' | 'brutalist';
 
 const TMP_DIR = path.resolve(__dirname, '..', '..', 'tmp');
 
 export function pickTemplateStyle(): TemplateStyle {
-  const styles: TemplateStyle[] = ['clean', 'noir', 'editorial'];
+  const styles: TemplateStyle[] = ['clean', 'noir', 'editorial', 'brutalist'];
   return styles[Math.floor(Math.random() * styles.length)];
 }
 
@@ -67,6 +68,9 @@ export async function renderCarouselSlides(
       break;
     case 'editorial':
       slideHtmls = renderEditorialSlides(content, bgBase64);
+      break;
+    case 'brutalist':
+      slideHtmls = renderBrutalistSlides(content, bgBase64);
       break;
     case 'clean':
     default:

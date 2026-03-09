@@ -1,5 +1,7 @@
 import { TemplateStyle } from '../infographic/renderer';
 
+export const SLOT_TEMPLATES: TemplateStyle[] = ['clean', 'noir', 'editorial', 'brutalist'];
+
 export interface ContentArchetype {
   id: string;
   name: string;
@@ -147,23 +149,87 @@ export const ARCHETYPES: ContentArchetype[] = [
     toneDirective: 'Analytical, balanced, intelligent. Present facts without preaching. Let the data speak. This is for a thoughtful audience.',
     lastSlideCta: '',
   },
+  {
+    id: 'the-indictment',
+    name: 'The Indictment',
+    goal: 'Outrage + shares + comments',
+    preferredStyles: ['noir', 'editorial'],
+    coverPrompt:
+      'Cover title must NAME a specific entity and accuse them directly (e.g., "ExxonMobil Knew Since 1977", "The 1% Are Killing You", "Your Bank Funds Your Destruction", "Modi/Trump/Politicians Won\'t Say This"). Subtitle should be a damning fact. Make it read like a courtroom verdict.',
+    slidePrompt: `Structure (PROSECUTION — you are building a legal case):
+- Slide 1: THE CRIME — what they did, when they knew, and how much they profited. Name the entity explicitly. Use exact dollar amounts and dates.
+- Slide 2: THE EVIDENCE — the smoking gun. Internal memos, leaked reports, court filings, data that proves intent. Make it undeniable.
+- Slide 3: THE VICTIMS — who paid the price while they profited. Name countries in the Global South, Indian states, specific communities. Body count, displacement numbers, economic ruin.
+- Slide 4: THE VERDICT — heading must be "Guilty." Body should be a 2-sentence summary of the crime and its scale. End with: "Share this before they bury it."`,
+    toneDirective: 'Prosecutorial, furious, factual. You are a prosecutor delivering a closing argument. Every sentence is an accusation backed by data. No hedging, no "may have" — they DID.',
+    lastSlideCta: 'Share this before they bury it.',
+  },
+  {
+    id: 'uncomfortable-truth',
+    name: 'The Uncomfortable Truth',
+    goal: 'Viral controversy + saves',
+    preferredStyles: ['noir', 'editorial'],
+    coverPrompt:
+      'Cover title must start with "Nobody Will Tell You This" or "The Truth About" or "What They Don\'t Want You To Know" (e.g., "Nobody Will Tell You This About Population", "The Truth About Your Carbon Footprint", "What They Don\'t Want You To Know About Recycling"). Subtitle should hint at the taboo truth.',
+    slidePrompt: `Structure (TABOO-BREAKING — say what no one will say):
+- Slide 1: THE LIE — the comfortable mainstream narrative everyone believes. Quote politicians, brands, or media. Show how soothing and false it is.
+- Slide 2: THE REAL DATA — the actual numbers that demolish the lie. Use research data. Make the contrast between the narrative and reality STARK.
+- Slide 3: WHY THEY LIE — follow the money. Who profits from this lie? Which corporations, politicians, or industries benefit from keeping you ignorant? Name them.
+- Slide 4: WHAT NOW — heading must be "Now You Know." Body should be a gut-punch summary. End with a line that makes the reader feel they can never unsee this truth.`,
+    toneDirective: 'Whistle-blower energy. You know something dangerous and you\'re telling the world despite pressure not to. Calm fury. Every word is a reveal.',
+    lastSlideCta: 'Now You Know.',
+  },
+  {
+    id: 'india-on-fire',
+    name: 'India On Fire',
+    goal: 'Hyper-local relevance for Indian audience',
+    preferredStyles: ['noir', 'editorial'],
+    coverPrompt:
+      'Cover title must be INDIA-SPECIFIC and alarming (e.g., "Delhi Will Be Unlivable by 2040", "80 Crore Indians Can\'t Feed Themselves — Now Add Climate Change", "India\'s Rivers Are Dying", "Your City Is Running Out of Water", "55°C Is Coming to Your State"). Subtitle should name specific Indian states or cities at risk.',
+    slidePrompt: `Structure (ALL DATA MUST BE INDIA-SPECIFIC):
+- Slide 1: THE CRISIS IN INDIA — what is happening RIGHT NOW. Name Indian cities, states, rivers. Use Indian government data, IPCC data for South Asia, or UN data. No vague "developing countries" — say "UP, Bihar, Rajasthan, Maharashtra."
+- Slide 2: WHO GETS HIT — India's most vulnerable — informal workers (rickshaw drivers, laborers, street vendors), small farmers, slum dwellers. Use population numbers in crores. Mention the 80 crore on free rations.
+- Slide 3: THE GLOBAL INJUSTICE — India's per-capita emissions vs the USA/EU. Show that India emits a fraction of what the West does but suffers 10x the consequences. This is not India's fault.
+- Slide 4: THE QUESTION — heading should directly challenge Indian readers (e.g., "Kya Hum Jaag Payenge?", "Will You Stay Silent?"). Body should make climate personal for every Indian.`,
+    toneDirective: 'Urgent, patriotic rage. You love India and you\'re watching it burn while its people are kept distracted by cricket and elections. Speak like someone shaking a sleeping person awake.',
+    lastSlideCta: '',
+  },
+  {
+    id: 'system-vs-you',
+    name: 'The System vs You',
+    goal: 'Class consciousness + viral shares',
+    preferredStyles: ['noir', 'editorial'],
+    coverPrompt:
+      'Cover title must contrast what the SYSTEM does vs what YOU are told to do (e.g., "They Fly Private. You\'re Told to Recycle.", "They Burn the Planet. You\'re Told to Use Metal Straws.", "30 Companies Cause 71% of Emissions. You\'re Blamed for Not Composting."). Make the hypocrisy the title.',
+    slidePrompt: `Structure (EXPOSE THE HYPOCRISY):
+- Slide 1: WHAT YOU'RE TOLD — the mainstream narrative that blames individuals. List the things regular people are shamed for: not recycling, eating meat, using plastic bags, flying once a year.
+- Slide 2: WHAT THEY DO — the reality of what corporations and billionaires do. Private jets, 100x consumption, lobbying against regulation, funding denial. Use specific names, jet fuel numbers, carbon footprints.
+- Slide 3: THE MATH — show that even if every individual did everything "right," it would change emissions by less than 5-10%. The remaining 90%+ comes from corporations and systemic decisions. Prove that individual guilt is a scam.
+- Slide 4: THE REAL FIGHT — heading must be "Stop Blaming Yourself." Body should redirect anger toward the real culprits. End with the most damning comparison stat.`,
+    toneDirective: 'Righteous anger on behalf of ordinary people. You are defending the common person against a system designed to exploit and blame them. Class-conscious, anti-corporate, empowering.',
+    lastSlideCta: 'Stop Blaming Yourself.',
+  },
 ];
 
-const WEEKDAY_SCHEDULE: [string, string][] = [
-  ['localized-impact', 'this-affects-you'],    // Sunday
-  ['brutal-stat', 'timeline'],                 // Monday
-  ['explainer-stack', 'policy-breakdown'],      // Tuesday
-  ['inequality-contrast', 'myth-vs-reality'],  // Wednesday
-  ['localized-impact', 'this-affects-you'],    // Thursday
-  ['if-nothing-changes', 'brutal-stat'],       // Friday
-  ['myth-vs-reality', 'timeline'],             // Saturday
+const WEEKDAY_SCHEDULE: [string, string, string, string][] = [
+  ['india-on-fire', 'uncomfortable-truth', 'brutal-stat', 'system-vs-you'],       // Sunday
+  ['the-indictment', 'india-on-fire', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
+  ['brutal-stat', 'system-vs-you', 'india-on-fire', 'the-indictment'],            // Tuesday
+  ['inequality-contrast', 'the-indictment', 'uncomfortable-truth', 'brutal-stat'], // Wednesday
+  ['uncomfortable-truth', 'india-on-fire', 'system-vs-you', 'myth-vs-reality'],   // Thursday
+  ['system-vs-you', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
+  ['myth-vs-reality', 'india-on-fire', 'if-nothing-changes', 'uncomfortable-truth'], // Saturday
 ];
 
-export function pickArchetype(forEvening = false): ContentArchetype {
+export function pickArchetype(slotIndex = 0): ContentArchetype {
   const dayOfWeek = new Date().getDay(); // 0=Sun, 6=Sat
-  const slot = forEvening ? 1 : 0;
+  const slot = Math.min(slotIndex, 3);
   const archetypeId = WEEKDAY_SCHEDULE[dayOfWeek][slot];
   return ARCHETYPES.find(a => a.id === archetypeId) || ARCHETYPES[0];
+}
+
+export function getSlotTemplate(slotIndex: number): TemplateStyle {
+  return SLOT_TEMPLATES[Math.min(slotIndex, SLOT_TEMPLATES.length - 1)];
 }
 
 export function getArchetypeById(id: string): ContentArchetype | undefined {

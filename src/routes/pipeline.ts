@@ -7,7 +7,7 @@ import { generateContent } from '../content/generator';
 import { researchTopic } from '../content/researcher';
 import { fetchUnsplashImage } from '../content/unsplash';
 import { renderCarouselSlides } from '../infographic/renderer';
-import { ARCHETYPES, pickArchetype, getArchetypeById } from '../content/archetypes';
+import { ARCHETYPES, pickArchetype, getArchetypeById, SLOT_TEMPLATES } from '../content/archetypes';
 import path from 'path';
 
 const router = Router();
@@ -22,11 +22,14 @@ router.get('/pipeline/topics', (_req: Request, res: Response) => {
 });
 
 router.get('/pipeline/archetypes', (_req: Request, res: Response) => {
-  const today = pickArchetype(false);
-  const tonight = pickArchetype(true);
+  const todaySlots = SLOT_TEMPLATES.map((template, i) => ({
+    slot: i,
+    archetype: pickArchetype(i).id,
+    template,
+  }));
   res.json({
     all: ARCHETYPES.map(a => ({ id: a.id, name: a.name, goal: a.goal, styles: a.preferredStyles })),
-    today: { morning: today.id, evening: tonight.id },
+    today: todaySlots,
   });
 });
 
@@ -35,8 +38,8 @@ router.get('/pipeline/status', (_req: Request, res: Response) => {
     openaiConfigured: !!config.openaiApiKey,
     cloudinaryConfigured: !!(config.cloudinary.cloudName && config.cloudinary.apiKey),
     schedule: {
-      morningHour: config.pipeline.morningHour,
-      eveningHour: config.pipeline.eveningHour,
+      postingHours: config.pipeline.postingHours,
+      postsPerDay: config.pipeline.postingHours.length,
       timezone: config.pipeline.timezone,
     },
     topicsCount: CLIMATE_TOPICS.length,
@@ -51,10 +54,9 @@ router.post('/pipeline/generate', async (_req: Request, res: Response) => {
   }
 
   try {
-    res.json({ message: 'Pipeline started — generating immediately (no delay)' });
-    const hour = new Date().getHours();
-    const forEvening = hour >= 14;
-    runPipeline(forEvening).then(result => {
+    const slotIndex = typeof _req.body?.slot === 'number' ? _req.body.slot : 0;
+    res.json({ message: `Pipeline started — slot ${slotIndex}, generating immediately (no delay)` });
+    runPipeline(slotIndex).then(result => {
       console.log(`[api] Pipeline completed: topic=${result.topicId}, post=#${result.postId}`);
     }).catch(err => {
       console.error('[api] Pipeline failed:', err instanceof Error ? err.message : String(err));

@@ -72,19 +72,22 @@ export interface GeneratedContent {
 }
 
 const HASHTAG_POOL = [
-  '#ClimateChange', '#ClimateCrisis', '#GlobalWarming', '#ClimateAction',
-  '#ClimateJustice', '#ActOnClimate', '#FridaysForFuture', '#ClimateEmergency',
-  '#Sustainability', '#SustainableLiving', '#GreenFuture', '#EcoFriendly',
-  '#RenewableEnergy', '#CleanEnergy', '#SolarPower', '#WindEnergy',
-  '#CarbonFootprint', '#NetZero', '#ZeroEmissions', '#GreenNewDeal',
-  '#EnvironmentalJustice', '#SaveThePlanet', '#EarthFirst', '#ProtectOurPlanet',
-  '#Deforestation', '#OceanPollution', '#PlasticFree', '#WaterCrisis',
-  '#AirPollution', '#Biodiversity', '#WildlifeProtection', '#EndangeredSpecies',
-  '#FossilFuels', '#BigOil', '#CorporateGreed', '#CorporateAccountability',
-  '#GreenEnergy', '#EcoWarrior', '#ClimateFacts', '#EnvironmentMatters',
-  '#PlanetOverProfit', '#ClimateScience', '#1Point5Degrees', '#ParisAgreement',
-  '#CircularEconomy', '#GreenTech', '#UrbanSustainability', '#FoodSecurity',
-  '#HeatWave', '#SeaLevelRise',
+  '#ClimateCrisis', '#ClimateEmergency', '#ClimateCollapse', '#ClimateBreakdown',
+  '#ClimateJustice', '#ClimateTruth', '#ClimateReality', '#ClimateFacts',
+  '#SystemChange', '#SystemicFailure', '#CorporateGreed', '#CorporateAccountability',
+  '#BigOilLies', '#FossilFuelCrimes', '#EndFossilFuels', '#FossilFuelLobby',
+  '#PollutionKills', '#Greenwashing', '#GreenwashingExposed', '#NetZeroScam',
+  '#PlanetOverProfit', '#PeopleOverProfit', '#WakeUp', '#OpenYourEyes',
+  '#ClimateAction', '#ClimateActivism', '#Degrowth', '#Overconsumption',
+  '#EatTheRich', '#TaxTheRich', '#BillionaireHypocrisy', '#WealthInequality',
+  '#MassExtinction', '#SixthExtinction', '#BiodiversityLoss', '#EcosystemCollapse',
+  '#WaterCrisis', '#FoodCrisis', '#HungerCrisis', '#ClimateRefugees',
+  '#EnvironmentalRacism', '#EnvironmentalJustice', '#IndiaClimateCrisis',
+  '#HimalayanMeltdown', '#MonsoonCrisis', '#Deforestation', '#SaveForests',
+  '#AirPollution', '#ToxicAir', '#Microplastics', '#OceanDeath',
+  '#HeatWave', '#ExtremeWeather', '#ClimateDisaster', '#Tipping',
+  '#ParisAgreementFailed', '#COPFailure', '#ClimateScam', '#WakeUpIndia',
+  '#PopulationCrisis', '#Overpopulation', '#ConsumptionCrisis', '#BoilingPoint',
 ];
 
 function pickRandomHashtags(count: number = 10): string {
@@ -115,27 +118,38 @@ export async function generateContent(
     ? `\nTONE: ${archetype.toneDirective}`
     : '\nYour tone is direct, factual, and educational — like a mini documentary in slides.';
 
-  const systemPrompt = `You are a climate change investigative journalist creating Instagram carousel explainers for a GLOBAL audience.
-You focus on corporate accountability, naming specific companies, CEOs, billionaires, and industry leaders responsible for climate damage.
-You have been provided with LIVE WEB RESEARCH data below — use ONLY the facts, statistics, and sources from that research. Do NOT make up or hallucinate any numbers. If a stat is in the research, use it with its exact source. If something is not in the research, do not invent it.
+  const systemPrompt = `You are a RADICAL climate truth-teller creating Instagram carousels that refuse to sugarcoat the existential crisis facing humanity. You are NOT neutral. You are ANGRY. You are FACTUAL. You are URGENT.
 
-GLOBAL PERSPECTIVE (CRITICAL):
-- Frame everything through a GLOBAL NORTH vs GLOBAL SOUTH lens — who causes emissions vs who suffers the consequences.
-- Use COUNTRY-LEVEL data (e.g., "India", "Bangladesh", "USA", "Germany", "Nigeria") — NOT community-level or neighborhood-level data.
-- Compare nations and continents, not neighborhoods. Example: "The US emits 15 tonnes CO2 per capita while Bangladesh emits 0.5 — yet Bangladesh loses 4% of GDP annually to flooding."
-- Name countries, multinational corporations, and world leaders — not local communities or city-level issues.
-- Your audience is international. Make every post relevant to someone in India, Brazil, Europe, or Africa — not just one country.
+Your approach:
+- NAME THE GUILTY. Name specific corporations, billionaires, CEOs, politicians, and industries. Don't say "fossil fuel industry" — say "Saudi Aramco, ExxonMobil, Shell, Chevron, and Gazprom."
+- FOLLOW THE MONEY. Every climate crime has a profiteer. Expose them.
+- ATTACK THE SYSTEM, NOT THE INDIVIDUAL. The common person recycling is not the problem. 30 corporations producing 71% of emissions IS. The billionaire flying private jets while preaching sustainability IS.
+- INDIA-FOCUSED WITH GLOBAL CONTEXT. Your primary audience is Indian. Use Indian examples, Indian cities, Indian data wherever possible — then connect to the global picture. Mention Indian states (UP, Bihar, Rajasthan), Indian rivers (Ganga, Yamuna), Indian realities (80 crore people on free rations, informal workers in 50°C heat).
+
+You have been provided with LIVE WEB RESEARCH data below — use ONLY the facts, statistics, and sources from that research. Do NOT hallucinate any numbers. If a stat is in the research, use it with its exact source.
+
+RADICAL FRAMING (CRITICAL):
+- The climate crisis is NOT a "future problem." It is HERE. NOW. People are DYING today.
+- Development vs Environment is a FALSE CHOICE — your body IS the Earth. Same water, same minerals, same temperature sensitivity. Destroying one destroys the other.
+- The Paris Agreement FAILED — emissions were supposed to DROP 44% by 2030, instead they INCREASED 3%. Every COP is theater.
+- Population × per-capita consumption = total emissions. This is the equation nobody will discuss because it requires uncomfortable truths.
+- 100-1,000 species are going extinct EVERY SINGLE DAY. We are living through the 6th mass extinction and scrolling through Instagram.
+- The rich KNOW what's coming. They're buying bunkers and building rockets. They plan to LEAVE. You will be left behind.
+- Media covers ZERO minutes of climate per day. Your ignorance is by design. The same billionaires causing emissions control what you see on TV and social media.
+- "2°C average" means PEAK DAYS OF 55-60°C. With humidity, felt temperature hits 15°C above actual. Your AC, bike, car, and phone will fail in that heat.
 ${toneDirective}
 
 CRITICAL WRITING RULES:
 
-1. Every slide body MUST end with a SPECIFIC, VISCERAL consequence — not vague phrases.
+1. Every slide body MUST end with a SPECIFIC, VISCERAL, GUT-PUNCHING consequence — not corporate-speak.
 
-BANNED VAGUE PHRASES (never use these): "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future".
+BANNED PHRASES (NEVER use): "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices".
 
-REQUIRED: Replace vague phrases with SPECIFIC consequences like: "children developing chronic lung disease from pesticide exposure", "families spending 40% of income on food that cost 15% a decade ago", "200,000 people fleeing flooded coastlines each year", "1 in 3 coral reefs bleached beyond recovery", "farm workers collapsing from 50°C heatwaves".
+REQUIRED: Replace with BRUTAL SPECIFICS like: "rickshaw drivers collapsing dead on Delhi roads at 52°C", "80 crore Indians who depend on free rations watching crops fail", "Himalayan glaciers disappearing — first the floods, then permanent drought for 75 crore people", "your child breathing microplastics with every single breath", "birds burning alive mid-flight in 50°C heat", "100 cities in India running out of water within 5 years".
 
-2. Use NUMBERS to quantify consequences whenever possible (e.g., "killing 15,000 people annually", "displacing 3.5 million families", "destroying $200 billion in crops").`;
+2. Use NUMBERS that SHOCK. Not "many people affected" but "1.2 BILLION climate refugees by 2050 — that's 15% of all humans alive." Not "rising temperatures" but "India lost 10% of GDP to climate change THIS YEAR alone — heading to 30-40% loss."
+
+3. Make every post feel like a WAKE-UP SLAP, not a lecture. The reader should feel uncomfortable, angry, and compelled to share.`;
 
   const recentSection = recentPosts.length > 0
     ? `\n\nDO NOT repeat any of these angles — they were already posted in the last 7 days:\n${recentPosts.map(p => `- "${p.title}"`).join('\n')}\n\nPick a COMPLETELY DIFFERENT angle, fact, or story.`

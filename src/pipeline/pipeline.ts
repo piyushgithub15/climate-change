@@ -6,7 +6,7 @@ import { fetchUnsplashImage } from '../content/unsplash';
 import { renderCarouselSlides } from '../infographic/renderer';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../media/uploader';
 import { publishCarousel, checkRateLimit } from '../instagram/api';
-import { pickArchetype, ContentArchetype } from '../content/archetypes';
+import { pickArchetype, getSlotTemplate, ContentArchetype } from '../content/archetypes';
 import { pickCaptionStyle } from '../content/caption-styles';
 import {
   createPost,
@@ -30,7 +30,7 @@ async function pickNextTopic(): Promise<typeof CLIMATE_TOPICS[number]> {
   return CLIMATE_TOPICS[nextIndex];
 }
 
-export async function runPipeline(forEvening = false): Promise<{ postId: number; topicId: string }> {
+export async function runPipeline(slotIndex = 0): Promise<{ postId: number; topicId: string }> {
   const lastRun = await getLastPipelineRunTime();
   if (lastRun) {
     const elapsedMs = Date.now() - lastRun.getTime();
@@ -42,11 +42,11 @@ export async function runPipeline(forEvening = false): Promise<{ postId: number;
   }
 
   const topic = await pickNextTopic();
-  const archetype = pickArchetype(forEvening);
-  const style = archetype.preferredStyles[Math.floor(Math.random() * archetype.preferredStyles.length)];
+  const archetype = pickArchetype(slotIndex);
+  const style = getSlotTemplate(slotIndex);
   const captionStyle = pickCaptionStyle(archetype.id);
   console.log(`\n[pipeline] === Starting carousel pipeline: "${topic.theme}" (${topic.id}) ===`);
-  console.log(`[pipeline] Archetype: ${archetype.name} | Template: ${style} | Caption: ${captionStyle.name}`);
+  console.log(`[pipeline] Slot: ${slotIndex} | Archetype: ${archetype.name} | Template: ${style} | Caption: ${captionStyle.name}`);
 
   const logId = await createPipelineLog(topic.id);
 

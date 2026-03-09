@@ -35,6 +35,9 @@ export const config = {
   pipeline: {
     morningHour: parseInt(process.env.PIPELINE_MORNING_HOUR || '9', 10),
     eveningHour: parseInt(process.env.PIPELINE_EVENING_HOUR || '18', 10),
+    postingHours: (process.env.PIPELINE_POSTING_HOURS || '8,12,16,20')
+      .split(',')
+      .map(h => parseInt(h.trim(), 10)),
     timezone: process.env.PIPELINE_TIMEZONE || Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
 };

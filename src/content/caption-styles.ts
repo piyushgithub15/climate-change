@@ -131,18 +131,88 @@ Or:
 The clock is ticking.
 The boardrooms are silent."`,
   },
+  {
+    id: 'rage-fuel',
+    name: 'The Rage Fuel',
+    purpose: 'Maximum outrage — drives shares and angry comments',
+    prompt: `Write a RAGE FUEL caption. Structure:
+1. Open with the most infuriating contrast or fact — something that makes people's blood boil (1 sentence).
+2. Follow up with WHO is responsible — name a corporation, billionaire, or system (1-2 sentences).
+3. Then flip it — what YOU are told to do instead (recycle, use metal straws, save water) while they destroy everything.
+4. End with a furious line that demands sharing. Something like "If this doesn't make you angry, you're not paying attention." or "Share this. Tag them. Make them answer."
+
+Keep it 5-7 lines total. Tone: FURIOUS, righteous anger, class-conscious. You're speaking for the 99% against the 1%.
+
+Example structure:
+"A single billionaire's jet burns more fuel in one weekend than your entire lifetime of car travel.
+
+But YOU were told to carpool.
+
+30 companies produce 71% of global emissions.
+But YOU were told to carry a cloth bag.
+
+Stop feeling guilty. Start feeling angry.
+
+Share this. Tag them. Make them answer."`,
+  },
+  {
+    id: 'wake-up-call',
+    name: 'The Wake-Up Call',
+    purpose: 'Shake passive followers into action — urgency + alarm',
+    prompt: `Write a WAKE-UP CALL caption. Structure:
+1. Open with a SHOCKING fact the reader probably doesn't know (1 sentence).
+2. Explain why NO ONE is talking about this — media blackout, corporate suppression, political convenience (1-2 sentences).
+3. Make it PERSONAL — how this will hit the reader's life, family, city, or country within years, not decades (1-2 sentences).
+4. End with a line that makes NOT sharing feel like complicity. Something like "Every person who sees this and does nothing is part of the problem." or "Your silence is their shield."
+
+Keep it 5-7 lines total. Tone: alarm, disbelief, like you just found out something horrifying and you're telling your closest friend.
+
+Example structure:
+"100 to 1,000 species go extinct every single day.
+
+Not a single TV channel in India spent a minute covering this today. Not one.
+
+By the time your child is 30, they'll live in a world with half the species you grew up with.
+
+Your silence is their shield. Share this."`,
+  },
+  {
+    id: 'india-direct',
+    name: 'The India Direct',
+    purpose: 'Hyper-targeted for Indian audience — drives comments and saves',
+    prompt: `Write an INDIA DIRECT caption. Structure:
+1. Open with an India-specific stat or fact that hits home — name Indian cities, states, or realities (1 sentence). Use crores, not millions.
+2. Connect it to the global system — how the West/billionaires/corporations caused this while India pays the price (1-2 sentences).
+3. Make it about the reader's daily life in India — their water, their food, their city, their children's future (1 sentence).
+4. End with a provocative question or call to share — something that an Indian reader MUST respond to.
+
+Keep it 5-7 lines total. Tone: patriotic anger, protective fury. You're an Indian who is tired of India being exploited.
+
+Example structure:
+"30 Indian cities will run out of drinking water in the next 10 years. Jaipur, Indore, Srinagar — your city might be next.
+
+The US emits 15x more CO2 per person than India. But WE get the floods, the heatwaves, and the droughts.
+
+Your kids will pay for their pollution with their lives.
+
+Tag someone who needs to see this."`,
+  },
 ];
 
 const ARCHETYPE_CAPTION_MAP: Record<string, string[]> = {
-  'brutal-stat': ['save-optimized', 'minimal', 'debate-trigger'],
-  'this-affects-you': ['you-framing', 'debate-trigger', 'you-framing'],
-  'myth-vs-reality': ['opinion-authority', 'debate-trigger', 'opinion-authority'],
-  'inequality-contrast': ['debate-trigger', 'you-framing', 'opinion-authority'],
-  'timeline': ['future-projection', 'save-optimized', 'future-projection'],
-  'if-nothing-changes': ['future-projection', 'opinion-authority', 'minimal'],
-  'explainer-stack': ['save-optimized', 'minimal', 'save-optimized'],
-  'localized-impact': ['you-framing', 'debate-trigger', 'minimal'],
-  'policy-breakdown': ['opinion-authority', 'future-projection', 'debate-trigger'],
+  'brutal-stat': ['rage-fuel', 'minimal', 'wake-up-call'],
+  'this-affects-you': ['you-framing', 'india-direct', 'wake-up-call'],
+  'myth-vs-reality': ['rage-fuel', 'opinion-authority', 'debate-trigger'],
+  'inequality-contrast': ['rage-fuel', 'india-direct', 'debate-trigger'],
+  'timeline': ['future-projection', 'wake-up-call', 'minimal'],
+  'if-nothing-changes': ['wake-up-call', 'rage-fuel', 'minimal'],
+  'explainer-stack': ['save-optimized', 'wake-up-call', 'opinion-authority'],
+  'localized-impact': ['india-direct', 'rage-fuel', 'wake-up-call'],
+  'policy-breakdown': ['rage-fuel', 'opinion-authority', 'debate-trigger'],
+  'the-indictment': ['rage-fuel', 'wake-up-call', 'minimal'],
+  'uncomfortable-truth': ['wake-up-call', 'rage-fuel', 'opinion-authority'],
+  'india-on-fire': ['india-direct', 'rage-fuel', 'wake-up-call'],
+  'system-vs-you': ['rage-fuel', 'debate-trigger', 'india-direct'],
 };
 
 export function pickCaptionStyle(archetypeId?: string): CaptionStyle {
