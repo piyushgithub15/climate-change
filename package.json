@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
+    "@tavily/core": "^0.7.2",
     "axios": "^1.7.0",
     "cloudinary": "^2.5.0",
     "cors": "^2.8.5",

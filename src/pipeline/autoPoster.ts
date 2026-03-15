@@ -1,8 +1,23 @@
 import cron from 'node-cron';
 import { config } from '../config';
-import { runPipeline } from './pipeline';
+import { runPipeline, runEventPipeline } from './pipeline';
 
 let isRunning = false;
+let todayEventSlot = -1;
+let eventSlotDate = '';
+let eventUsedToday = false;
+
+function pickEventSlot(): number {
+  const today = new Date().toISOString().slice(0, 10);
+  if (eventSlotDate !== today) {
+    const slots = config.pipeline.postingHours.length;
+    todayEventSlot = Math.floor(Math.random() * slots);
+    eventSlotDate = today;
+    eventUsedToday = false;
+    console.log(`[auto-poster] Today's event slot: ${todayEventSlot} (${config.pipeline.postingHours[todayEventSlot]}:00)`);
+  }
+  return todayEventSlot;
+}
 
 function randomOffsetMs(): number {
   const maxOffsetMin = 15;
@@ -27,6 +42,24 @@ async function triggerPipeline(slotIndex = 0) {
   }
 
   try {
+    const eventSlot = pickEventSlot();
+    const isEventSlot = slotIndex === eventSlot && !eventUsedToday;
+
+    if (isEventSlot) {
+      console.log(`[auto-poster] Slot ${slotIndex} is today's event slot — attempting event pipeline`);
+      try {
+        const eventResult = await runEventPipeline(slotIndex);
+        if (eventResult) {
+          eventUsedToday = true;
+          console.log(`[auto-poster] Event post completed: "${eventResult.event.headline}", post=#${eventResult.postId}`);
+          return;
+        }
+        console.log('[auto-poster] No significant event found — falling back to regular pipeline');
+      } catch (eventErr: any) {
+        console.warn(`[auto-poster] Event pipeline failed (${eventErr.message}), falling back to regular`);
+      }
+    }
+
     const result = await runPipeline(slotIndex);
     console.log(`[auto-poster] Auto-post completed: slot=${slotIndex}, topic=${result.topicId}, post=#${result.postId}`);
   } catch (err: any) {
@@ -46,6 +79,8 @@ export function startAutoPoster(): void {
     console.log('[auto-poster] Skipped — OPENAI_API_KEY not configured');
     return;
   }
+
+  pickEventSlot();
 
   postingHours.forEach((hour, index) => {
     const cronExpr = `0 ${hour} * * *`;

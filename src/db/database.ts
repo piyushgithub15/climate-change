@@ -56,6 +56,20 @@ export async function initSchema(): Promise<void> {
       error_message TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS post_sources (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      pipeline_log_id INTEGER NOT NULL,
+      fact_id TEXT NOT NULL,
+      claim TEXT NOT NULL,
+      value TEXT NOT NULL,
+      source_name TEXT NOT NULL,
+      source_url TEXT NOT NULL DEFAULT '',
+      source_year INTEGER NOT NULL,
+      category TEXT NOT NULL,
+      confidence INTEGER NOT NULL DEFAULT 5,
+      origin TEXT NOT NULL DEFAULT 'tavily',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
   ]);
 }
 
@@ -206,6 +220,47 @@ export async function getLastPipelineRunTime(): Promise<Date | null> {
   const row = result.rows[0] as unknown as { created_at: string } | undefined;
   if (!row?.created_at) return null;
   return new Date(row.created_at + 'Z');
+}
+
+// --- Post sources ---
+
+export interface PostSource {
+  id: number;
+  pipeline_log_id: number;
+  fact_id: string;
+  claim: string;
+  value: string;
+  source_name: string;
+  source_url: string;
+  source_year: number;
+  category: string;
+  confidence: number;
+  origin: string;
+  created_at: string;
+}
+
+export async function savePostSources(
+  pipelineLogId: number,
+  facts: { id: string; claim: string; value: string; source: string; sourceUrl: string; year: number; category: string; confidence: number; origin: string }[]
+): Promise<void> {
+  if (facts.length === 0) return;
+  const db = getDb();
+
+  for (const fact of facts) {
+    await db.execute({
+      sql: `INSERT INTO post_sources (pipeline_log_id, fact_id, claim, value, source_name, source_url, source_year, category, confidence, origin)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [pipelineLogId, fact.id, fact.claim, fact.value, fact.source, fact.sourceUrl || '', fact.year, fact.category, fact.confidence, fact.origin],
+    });
+  }
+}
+
+export async function getPostSources(pipelineLogId: number): Promise<PostSource[]> {
+  const result = await getDb().execute({
+    sql: 'SELECT * FROM post_sources WHERE pipeline_log_id = ? ORDER BY id ASC',
+    args: [pipelineLogId],
+  });
+  return result.rows as unknown as PostSource[];
 }
 
 export async function getRecentPostTitles(days = 7): Promise<{ topic_id: string; title: string }[]> {
