@@ -23,6 +23,14 @@ const NEWS_DOMAINS = [
   'scientificamerican.com',
   'nature.com',
   'phys.org',
+  'news.un.org',
+  'dw.com',
+  'france24.com',
+  'hindustantimes.com',
+  'ndtv.com',
+  'thehindu.com',
+  'scroll.in',
+  'downtoearth.org.in',
 ];
 
 function getTavilyClient() {
@@ -38,11 +46,17 @@ function getOpenAIClient(): OpenAI {
 export async function discoverClimateEvent(): Promise<ClimateEvent | null> {
   const client = getTavilyClient();
 
+  const queries = [
+    'breaking climate change extreme weather disaster record global this week',
+    'climate crisis flood heatwave drought cyclone wildfire India Asia Africa Europe this week',
+  ];
+  const query = queries[Math.floor(Math.random() * queries.length)];
+
   const response = await client.search(
-    'breaking climate change weather extreme event disaster record temperature today',
+    query,
     {
       searchDepth: 'advanced',
-      maxResults: 8,
+      maxResults: 10,
       topic: 'news',
       timeRange: 'week',
       includeDomains: NEWS_DOMAINS,
@@ -68,7 +82,8 @@ export async function discoverClimateEvent(): Promise<ClimateEvent | null> {
         content: `You pick the single most impactful climate event from news snippets.
 Rules:
 - Pick the event with the HIGHEST visual and emotional impact for Instagram
-- Prefer: record temperatures, extreme weather disasters, major policy decisions, corporate scandals, ice melt records, species extinction events
+- STRONGLY PREFER events from outside the US — India, Asia, Africa, Europe, Pacific Islands, Arctic, Antarctic, South America. Only pick a US event if it is dramatically more impactful than all non-US options.
+- Prefer: record temperatures, extreme weather disasters, floods, cyclones, droughts, wildfires, ice melt records, species extinction events, major policy decisions
 - Avoid: opinion pieces, previews of upcoming conferences, minor local stories
 - Return ONLY valid JSON, no markdown fences`,
       },

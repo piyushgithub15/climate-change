@@ -847,4 +847,86 @@ export const CLIMATE_TOPICS: ClimateTopic[] = [
       'What happens to marine ecosystems and fishing communities when dead zones expand',
     ],
   },
+
+  // === PHILOSOPHICAL — WHY HUMANS DESTROY ===
+  {
+    id: 'why-we-consume',
+    subject: 'Why humans consume more than they need',
+    category: 'philosophical',
+    angles: [
+      'Hedonic adaptation and why acquiring more never satisfies us',
+      'How advertising manufactures desires that did not exist before',
+      'The gap between material wealth and reported happiness across nations',
+    ],
+  },
+  {
+    id: 'population-as-destruction',
+    subject: 'Human population growth as ecological destruction',
+    category: 'philosophical',
+    angles: [
+      'How each additional billion humans accelerates resource extraction and habitat loss',
+      'The ecological footprint of 8 billion vs what the planet can regenerate',
+      'Why every government and religion still promotes population growth despite finite resources',
+    ],
+  },
+  {
+    id: 'growth-delusion',
+    subject: 'The delusion of infinite economic growth on a finite planet',
+    category: 'philosophical',
+    angles: [
+      'How GDP became a religion and why degrowth is treated as heresy',
+      'Earth Overshoot Day and how humanity uses 1.7 Earths of resources annually',
+      'What happens when an economic system requires infinite growth but the planet does not grow',
+    ],
+  },
+  {
+    id: 'species-that-knew',
+    subject: 'Humanity as the only species that knowingly destroys its own habitat',
+    category: 'philosophical',
+    angles: [
+      'The paradox of intelligence — we understand the damage and do it anyway',
+      'How much of the natural world has been destroyed since humans became dominant',
+      'Whether any other species in history has caused a mass extinction event',
+    ],
+  },
+  {
+    id: 'lust-for-more',
+    subject: 'The human lust for more — more things, more people, more growth',
+    category: 'philosophical',
+    angles: [
+      'Planned obsolescence and how industries engineer waste into products',
+      'Status consumption — why we buy things to signal worth rather than for need',
+      'How the global economy depends on people never feeling they have enough',
+    ],
+  },
+  {
+    id: 'comfort-vs-survival',
+    subject: 'Human comfort vs planetary survival',
+    category: 'philosophical',
+    angles: [
+      'How much carbon is emitted purely for convenience and comfort — not survival',
+      'Air conditioning, fast fashion, and single-use culture as symptoms of a deeper sickness',
+      'Whether humanity can voluntarily accept less comfort to avoid extinction',
+    ],
+  },
+  {
+    id: 'children-into-ruin',
+    subject: 'Bringing children into a world we are actively destroying',
+    category: 'philosophical',
+    angles: [
+      'Birth rates vs ecological capacity — can the planet support the next generation at current consumption',
+      'The antinatalism debate and whether reproduction is ethical during ecological collapse',
+      'What kind of planet todays children will inherit based on current trajectories',
+    ],
+  },
+  {
+    id: 'extinction-by-design',
+    subject: 'Whether human civilization is designed to self-destruct',
+    category: 'philosophical',
+    angles: [
+      'Historical civilizations that collapsed from overconsumption of resources',
+      'Whether modern industrial civilization is repeating the same pattern at a global scale',
+      'The Fermi Paradox and whether intelligent species inevitably destroy themselves',
+    ],
+  },
 ];

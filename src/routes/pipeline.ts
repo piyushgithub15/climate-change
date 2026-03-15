@@ -8,6 +8,7 @@ import { researchTopic } from '../content/researcher';
 import { fetchUnsplashImage } from '../content/unsplash';
 import { renderCarouselSlides } from '../infographic/renderer';
 import { ARCHETYPES, pickArchetype, getArchetypeById, SLOT_TEMPLATES } from '../content/archetypes';
+import { discoverClimateEvent } from '../content/event-discovery';
 import path from 'path';
 
 const router = Router();
@@ -82,18 +83,48 @@ router.post('/pipeline/preview', async (req: Request, res: Response) => {
     const forceStyle = req.body?.style;
     const style = forceStyle || archetype.preferredStyles[Math.floor(Math.random() * archetype.preferredStyles.length)];
 
-    const topicIndex = CLIMATE_TOPICS.findIndex(t => t.id === (req.body?.topicId || ''));
-    const topic = topicIndex >= 0 ? CLIMATE_TOPICS[topicIndex] : CLIMATE_TOPICS[Math.floor(Math.random() * CLIMATE_TOPICS.length)];
+    let topicSubject: string;
+    let topic: typeof CLIMATE_TOPICS[number];
 
-    console.log(`[preview] Generating preview: "${topic.subject}" | Archetype: ${archetype.name} | Style: ${style}`);
+    if (archetype.id === 'current-event') {
+      console.log(`[preview] Current-event archetype — discovering breaking climate news...`);
+      const event = await discoverClimateEvent();
+      if (!event) {
+        res.status(404).json({ error: 'No significant climate event found this week. Try again later.' });
+        return;
+      }
+      console.log(`[preview] Event found: "${event.headline}" (impact: ${event.impactScore}/10)`);
+      topicSubject = event.headline;
+      topic = {
+        id: 'current-event',
+        subject: event.headline,
+        category: 'current-event',
+        angles: [event.summary, `Location: ${event.location}`, `Source: ${event.sourceName}`],
+      };
+    } else {
+      const topicIndex = CLIMATE_TOPICS.findIndex(t => t.id === (req.body?.topicId || ''));
+      if (topicIndex >= 0) {
+        topic = CLIMATE_TOPICS[topicIndex];
+      } else if (archetype.preferredTopicCategories?.length) {
+        const pool = CLIMATE_TOPICS.filter(t => archetype.preferredTopicCategories!.includes(t.category));
+        topic = pool.length > 0
+          ? pool[Math.floor(Math.random() * pool.length)]
+          : CLIMATE_TOPICS[Math.floor(Math.random() * CLIMATE_TOPICS.length)];
+      } else {
+        topic = CLIMATE_TOPICS[Math.floor(Math.random() * CLIMATE_TOPICS.length)];
+      }
+      topicSubject = topic.subject;
+    }
 
-    const facts = await researchTopic(topic.subject, archetype);
+    console.log(`[preview] Generating preview: "${topicSubject}" | Archetype: ${archetype.name} | Style: ${style}`);
+
+    const facts = await researchTopic(topicSubject, archetype);
     const recentPosts = await getRecentPostTitles(7);
     const content = await generateContent(topic, recentPosts, facts, archetype);
 
     let bgImagePath: string | undefined;
     try {
-      bgImagePath = await fetchUnsplashImage(topic.subject);
+      bgImagePath = await fetchUnsplashImage(topicSubject);
     } catch (imgErr: any) {
       console.warn(`[preview] Unsplash image failed (${imgErr.message}), continuing without`);
     }
@@ -107,7 +138,7 @@ router.post('/pipeline/preview', async (req: Request, res: Response) => {
       style,
       archetype: archetype.id,
       archetypeName: archetype.name,
-      topic: topic.subject,
+      topic: topicSubject,
       title: content.coverTitle,
       slides: previewUrls,
       caption: content.caption,

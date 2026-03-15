@@ -23,13 +23,21 @@ import {
 const MAX_DAILY_POSTS = 20;
 const COOLDOWN_MINUTES = 5;
 
-async function pickNextTopic(): Promise<typeof CLIMATE_TOPICS[number]> {
-  const lastUsedId = await getLastUsedTopicId();
-  if (!lastUsedId) return CLIMATE_TOPICS[0];
+async function pickNextTopic(archetype?: ContentArchetype): Promise<typeof CLIMATE_TOPICS[number]> {
+  const pool = archetype?.preferredTopicCategories?.length
+    ? CLIMATE_TOPICS.filter(t => archetype.preferredTopicCategories!.includes(t.category))
+    : CLIMATE_TOPICS;
 
-  const lastIndex = CLIMATE_TOPICS.findIndex(t => t.id === lastUsedId);
-  const nextIndex = (lastIndex + 1) % CLIMATE_TOPICS.length;
-  return CLIMATE_TOPICS[nextIndex];
+  const candidates = pool.length > 0 ? pool : CLIMATE_TOPICS;
+
+  const lastUsedId = await getLastUsedTopicId();
+  if (!lastUsedId) return candidates[Math.floor(Math.random() * candidates.length)];
+
+  const lastIndex = candidates.findIndex(t => t.id === lastUsedId);
+  if (lastIndex === -1) return candidates[Math.floor(Math.random() * candidates.length)];
+
+  const nextIndex = (lastIndex + 1) % candidates.length;
+  return candidates[nextIndex];
 }
 
 export async function runPipeline(slotIndex = 0): Promise<{ postId: number; topicId: string }> {
@@ -43,8 +51,8 @@ export async function runPipeline(slotIndex = 0): Promise<{ postId: number; topi
     }
   }
 
-  const topic = await pickNextTopic();
   const archetype = pickArchetype(slotIndex);
+  const topic = await pickNextTopic(archetype);
   const style = getSlotTemplate(slotIndex);
   const captionStyle = pickCaptionStyle(archetype.id);
   console.log(`\n[pipeline] === Starting carousel pipeline: "${topic.subject}" (${topic.id}) ===`);

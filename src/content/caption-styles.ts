@@ -213,6 +213,7 @@ const ARCHETYPE_CAPTION_MAP: Record<string, string[]> = {
   'uncomfortable-truth': ['wake-up-call', 'rage-fuel', 'opinion-authority'],
   'india-on-fire': ['india-direct', 'rage-fuel', 'wake-up-call'],
   'system-vs-you': ['rage-fuel', 'debate-trigger', 'india-direct'],
+  'philosophical': ['wake-up-call', 'opinion-authority', 'debate-trigger'],
 };
 
 export function pickCaptionStyle(archetypeId?: string): CaptionStyle {

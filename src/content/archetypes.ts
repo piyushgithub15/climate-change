@@ -14,6 +14,7 @@ export interface ContentArchetype {
   lastSlideCta: string;
   researchDirective: string;
   researchMethod: 'tavily' | 'both';
+  preferredTopicCategories?: string[];
 }
 
 export const ARCHETYPES: ContentArchetype[] = [
@@ -311,6 +312,34 @@ Use as many slides as needed to tell the chronological story properly.`,
     lastSlideCta: 'Stop Blaming Yourself.',
   },
   {
+    id: 'philosophical',
+    name: 'The Philosophical Question',
+    goal: 'Deep engagement + saves + comments',
+    preferredStyles: ['noir', 'editorial'],
+    slideRange: [4, 6],
+    researchMethod: 'both',
+    preferredTopicCategories: ['philosophical', 'population-consumption'],
+    researchDirective: `Find data that exposes humanity's FUNDAMENTAL GREED — the lust to consume more, produce more, and multiply endlessly:
+1. The scale of human overshoot — Earth Overshoot Day, how many planets we'd need, resource extraction vs regeneration rates, total waste generated
+2. Population as a multiplier — total humans alive now vs any point in history, projections to 10 billion+, how every new billion accelerates extraction, emissions, habitat destruction, and species extinction
+3. The consumption machine — per-capita consumption growth, advertising spend that fuels desire, planned obsolescence, how GDP ideology treats "more" as sacred
+4. The psychological disease — hedonic adaptation research, why humans are never satisfied, status competition, the gap between material wealth and happiness
+5. The ecological price — species extinction rates caused by human expansion, habitat destroyed for agriculture and cities, forests cleared, oceans emptied, carbon emitted — the direct cost of human greed`,
+    coverPrompt:
+      'Cover title must be a DARK PHILOSOPHICAL QUESTION about human nature itself — questioning why we can never stop wanting more (e.g., "Why Can\'t We Stop?", "Are Humans a Plague?", "What If We Are the Extinction Event?", "8 Billion Appetites. One Planet.", "The Species That Ate Its Own Home"). Subtitle should add a devastating data point. This must feel like an uncomfortable truth about what we are.',
+    slidePrompt: `Create 4-6 slides (not counting the cover). Structure (PHILOSOPHICAL — questioning human nature itself):
+- First slide: THE APPETITE — humans take more than they need. Always have, always will. Use data on how much we extract vs what the planet can regenerate. Earth Overshoot Day. Resource extraction rates. The sheer volume of what 8 billion humans consume, discard, and destroy every single day.
+- Second slide: THE MULTIPLICATION — more people means more destruction. Period. Show the population curve from 1 billion to 8 billion. Each billion arrived faster. Every new billion means more land cleared, more species killed, more carbon dumped. Population is not neutral — it is a direct multiplier of ecological damage.
+- Third slide: THE LUST — why do we want more? Question the fundamental human drive. Hedonic treadmill — we buy, feel nothing, buy again. Status competition — we consume to signal worth. Advertising spends hundreds of billions to manufacture desire we never naturally had. We are not consuming to live. We are living to consume.
+- Fourth slide: THE WRECKAGE — translate human greed into numbers. Species gone. Forests erased. Oceans acidified. Ice melted. All so one species could have more than it needs and still feel empty.
+- Fifth slide (optional): THE QUESTION NOBODY ASKS — if more people and more consumption have only accelerated destruction, why does every government, religion, and economic system still worship growth? Why is "have more children, buy more things, grow the economy" still the default? Who benefits from this?
+- Final slide: THE MIRROR — heading should be brutally personal (e.g., "What Are You Really Hungry For?", "Will You Ever Have Enough?", "How Much Is Enough?"). No comforting answers. Just the question, sitting with the reader.
+
+CRITICAL TONE: This is quiet devastation, not shouting. Write like a philosopher who has seen too much. Use "we" — this is about the human species, not "them." Every slide should make the reader feel the weight of being part of a species that cannot stop.`,
+    toneDirective: 'Dark philosophical. Quietly devastating. You are questioning the nature of the human species itself — our bottomless hunger for more people, more things, more growth on a finite planet. No rage, no shouting — just the cold clarity of someone who sees what we are and cannot look away. Use "we" throughout. Every sentence should land like a stone dropped into still water.',
+    lastSlideCta: '',
+  },
+  {
     id: 'current-event',
     name: 'Breaking Climate Event',
     goal: 'Timeliness + relevance + shares',
@@ -337,10 +366,10 @@ Use as many slides as needed to tell the chronological story properly.`,
 ];
 
 const WEEKDAY_SCHEDULE: [string, string, string, string][] = [
-  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'system-vs-you'],      // Sunday
+  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'philosophical'],       // Sunday
   ['the-indictment', 'explainer-stack', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
   ['india-on-fire', 'system-vs-you', 'policy-breakdown', 'the-indictment'],         // Tuesday
-  ['inequality-contrast', 'timeline', 'uncomfortable-truth', 'brutal-stat'],        // Wednesday
+  ['inequality-contrast', 'timeline', 'philosophical', 'brutal-stat'],              // Wednesday
   ['this-affects-you', 'localized-impact', 'system-vs-you', 'myth-vs-reality'],     // Thursday
   ['explainer-stack', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
   ['myth-vs-reality', 'if-nothing-changes', 'inequality-contrast', 'timeline'],     // Saturday
