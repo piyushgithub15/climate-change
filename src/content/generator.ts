@@ -40,15 +40,7 @@ export interface TrendPoint {
   factRef?: string;
 }
 
-export interface PictogramData {
-  filled: number;
-  total: number;
-  filledLabel: string;
-  emptyLabel: string;
-  factRef?: string;
-}
-
-export type ChartType = 'bars' | 'donut' | 'compare' | 'ranked' | 'trend' | 'pictogram';
+export type ChartType = 'bars' | 'donut' | 'compare' | 'ranked' | 'trend';
 
 export interface SlideContent {
   heading: string;
@@ -64,8 +56,8 @@ export interface SlideContent {
   ranked?: RankedItem[];
   trend?: TrendPoint[];
   trendLabel?: string;
-  pictogram?: PictogramData;
   source: string;
+  sourceUrl?: string;
 }
 
 export interface GeneratedContent {
@@ -125,28 +117,26 @@ export async function generateContent(
     ? `\nTONE: ${archetype.toneDirective}`
     : '\nYour tone is direct, factual, and educational — like a mini documentary in slides.';
 
-  const systemPrompt = `You are a RADICAL climate truth-teller creating Instagram carousels that refuse to sugarcoat the existential crisis facing humanity. You are NOT neutral. You are ANGRY. You are FACTUAL. You are URGENT.
+  const systemPrompt = `You create Instagram carousels about climate change. You are factual, direct, and urgent.
 
 Your approach:
-- NAME THE GUILTY. Name specific corporations, billionaires, CEOs, politicians, and industries. Don't say "fossil fuel industry" — say "Saudi Aramco, ExxonMobil, Shell, Chevron, and Gazprom."
-- FOLLOW THE MONEY. Every climate crime has a profiteer. Expose them.
-- ATTACK THE SYSTEM, NOT THE INDIVIDUAL. The common person recycling is not the problem. 30 corporations producing 71% of emissions IS. The billionaire flying private jets while preaching sustainability IS.
-- INDIA-FOCUSED WITH GLOBAL CONTEXT. Your primary audience is Indian. Use Indian examples, Indian cities, Indian data wherever possible — then connect to the global picture. Mention Indian states (UP, Bihar, Rajasthan), Indian rivers (Ganga, Yamuna), Indian realities (80 crore people on free rations, informal workers in 50°C heat).
+- NAME THE GUILTY — but ONLY if the research facts below mention specific corporations, people, or entities. Never insert names that aren't in the research.
+- FOLLOW THE MONEY — expose profiteers, but only using data from the research facts.
+- ATTACK THE SYSTEM, NOT THE INDIVIDUAL — focus on systemic causes over individual blame.
+- GLOBAL AUDIENCE WITH LOCAL DEPTH. Your audience spans India and the world. Use whatever geography the research facts support — Indian data for India-focused archetypes, global data for global archetypes. Do NOT force an Indian angle when the research doesn't support it.
 
-You have been provided with VERIFIED RESEARCH FACTS below. Use ONLY these facts for statistics, numbers, and sources. Every stat you use in a slide MUST come from one of the provided facts. Do NOT invent, round, or paraphrase any numbers. If a fact is listed, use its exact value and source.
+STRICT DATA RULE: You have been provided with VERIFIED RESEARCH FACTS below. Use ONLY these facts for statistics, numbers, names, and sources. Every number, every stat, every company name, every comparison you use MUST come from the provided facts. Do NOT pull any data from your own knowledge. If a fact isn't in the research, don't use it.
 ${toneDirective}
 
 CRITICAL WRITING RULES:
 
-1. Every slide body MUST end with a SPECIFIC, VISCERAL, GUT-PUNCHING consequence — not corporate-speak.
+1. Every slide body MUST end with a SPECIFIC consequence backed by the research data — not generic statements.
 
-BANNED PHRASES (NEVER use): "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices".
+BANNED: "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices".
 
-REQUIRED: Replace with BRUTAL SPECIFICS — concrete images of real suffering with numbers.
+2. Use NUMBERS from the research facts. Not "many people affected" but exact figures from the facts.
 
-2. Use NUMBERS that SHOCK. Not "many people affected" but exact figures from the research facts.
-
-3. Make every post feel like a WAKE-UP SLAP, not a lecture. The reader should feel uncomfortable, angry, and compelled to share.`;
+3. NEVER recycle generic stats. Do NOT use any statistic that is not explicitly in the VERIFIED RESEARCH FACTS section below. If the research is about ocean warming, your charts and stats must be about ocean warming — not about per-capita CO2 emissions or corporate rankings unless those appear in the research.`;
 
   const highConfidence = facts.filter(f => f.confidence >= 7);
   const medConfidence = facts.filter(f => f.confidence >= 4 && f.confidence < 7);
@@ -204,10 +194,10 @@ ${archetypeSection}
 IMPORTANT RULES:
 1. Every slide MUST have a "source" field matching one of the verified research fact sources above.
 2. Every slide MUST have a primary stat and a secondary stat — taken directly from the research facts.
-3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 6 types.
+3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 5 types.
 4. CRITICAL — CHART DATA INTEGRITY: Every number displayed in a chart MUST come from a research fact above. Add a "factRef" field to EACH chart data point referencing the fact ID (e.g. "F1", "F3"). If you cannot find a research fact to back a chart data point, DO NOT include that data point. NEVER invent chart data.
 
-CHART TYPES (use each at most once, vary across slides — you MUST use at least 3 different types):
+CHART TYPES (vary across slides — you MUST use at least 3 different types):
 
 A) "bars" — horizontal bar chart comparing entities:
    "chartType": "bars",
@@ -252,17 +242,6 @@ E) "trend" — line/area chart showing change over time (3-5 data points):
    ]
    (value is 0-100 for Y-axis position. displayValue is the REAL number shown on each point. trendLabel is the chart title describing what the axis measures. GREAT for timeline archetypes.)
 
-F) "pictogram" — icon grid showing proportion (e.g., 7 out of 10 people affected):
-   "chartType": "pictogram",
-   "pictogram": {
-     "filled": 7,
-     "total": 10,
-     "filledLabel": "Affected by flooding",
-     "emptyLabel": "Not affected",
-     "factRef": "F12"
-   }
-   (filled/total MUST be derived from a real percentage or proportion in the research facts. E.g., if a fact says "73% of emissions", use filled:7 total:10. factRef is REQUIRED. NEVER guess proportions.)
-
 CAPTION STYLE FOR THIS POST: "${selectedCaptionStyle.name}" — ${selectedCaptionStyle.purpose}
 ${selectedCaptionStyle.prompt}
 
@@ -278,9 +257,10 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
       "statLabel": "What it represents",
       "secondaryStat": "Secondary number",
       "secondaryStatLabel": "What it means",
-      "chartType": "one of: bars, donut, compare, ranked, trend, pictogram",
+      "chartType": "one of: bars, donut, compare, ranked, trend",
       "[chartType key]": "data array/object matching the chosen chartType",
-      "source": "Specific data source from the verified facts"
+      "source": "Specific data source from the verified facts",
+      "sourceUrl": "URL of the source (from the research fact's URL field). If no URL available, leave empty string."
     }
   ],
   "ctaText": "",
@@ -293,13 +273,13 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   const maxTokens = 1800 + (maxSlides * 350);
 
   const response = await client.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5.4',
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
     ],
     temperature: 0.7,
-    max_tokens: maxTokens,
+    max_completion_tokens: maxTokens,
   });
 
   const raw = response.choices[0]?.message?.content?.trim();
@@ -322,24 +302,70 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
 
   if (facts.length > 0) {
     parsed = await validateChartData(parsed, facts);
+    patchEmptyStats(parsed, facts);
   }
 
   const captionWithoutTags = parsed.caption.replace(/#\w+/g, '').replace(/\s+/g, ' ').trim();
-  const hashtagCount = 8 + Math.floor(Math.random() * 5); // 8-12 hashtags
-  parsed.caption = `${captionWithoutTags}\n\n${pickRandomHashtags(hashtagCount)}`;
+
+  const sourceUrls = new Map<string, string>();
+  for (const slide of parsed.slides) {
+    if (slide.sourceUrl && slide.sourceUrl.trim()) {
+      sourceUrls.set(slide.source, slide.sourceUrl.trim());
+    }
+  }
+  for (const f of facts) {
+    if (f.sourceUrl && f.sourceUrl.trim() && !sourceUrls.has(f.source)) {
+      const usedInSlide = parsed.slides.some(s => s.source === f.source);
+      if (usedInSlide) sourceUrls.set(f.source, f.sourceUrl.trim());
+    }
+  }
+
+  const sourcesBlock = sourceUrls.size > 0
+    ? `\n\n📎 Sources:\n${[...sourceUrls.entries()].map(([name, url]) => `• ${name}: ${url}`).join('\n')}`
+    : '';
+
+  const hashtagCount = 8 + Math.floor(Math.random() * 5);
+  parsed.caption = `${captionWithoutTags}${sourcesBlock}\n\n${pickRandomHashtags(hashtagCount)}`;
 
   return parsed;
+}
+
+function isDash(val: string | undefined): boolean {
+  return !val || val === '-' || val === '–' || val === '—' || val.trim() === '';
+}
+
+function patchEmptyStats(content: GeneratedContent, facts: ResearchFact[]): void {
+  const usedFactIds = new Set<string>();
+
+  for (const slide of content.slides) {
+    if (!isDash(slide.stat)) {
+      const match = facts.find(f => slide.stat.includes(f.value) || f.value.includes(slide.stat));
+      if (match) usedFactIds.add(match.id);
+    }
+  }
+
+  for (const slide of content.slides) {
+    if (isDash(slide.stat)) {
+      const available = facts.filter(f => !usedFactIds.has(f.id));
+      const pick = available[0] || facts[0];
+      if (pick) {
+        slide.stat = pick.value;
+        slide.statLabel = pick.claim.length > 60 ? pick.claim.slice(0, 57) + '...' : pick.claim;
+        usedFactIds.add(pick.id);
+        console.log(`[patch-stats] Filled empty stat on "${slide.heading}" with [${pick.id}] ${pick.value}`);
+      }
+    }
+
+    if (isDash(slide.secondaryStat)) {
+      slide.secondaryStat = undefined;
+      slide.secondaryStatLabel = undefined;
+    }
+  }
 }
 
 function extractChartClaims(slide: SlideContent): { description: string; factRef?: string }[] {
   const claims: { description: string; factRef?: string }[] = [];
 
-  if (slide.pictogram) {
-    claims.push({
-      description: `Pictogram: ${slide.pictogram.filled}/${slide.pictogram.total} "${slide.pictogram.filledLabel}" vs "${slide.pictogram.emptyLabel}"`,
-      factRef: slide.pictogram.factRef,
-    });
-  }
   if (slide.bars) {
     for (const bar of slide.bars) {
       claims.push({ description: `Bar: "${bar.label}" = ${bar.displayValue}`, factRef: bar.factRef });
@@ -399,7 +425,7 @@ async function validateChartData(content: GeneratedContent, facts: ResearchFact[
 
   const openai = getClient();
   const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4.1-mini',
     messages: [
       {
         role: 'system',
@@ -450,7 +476,6 @@ Return ONLY a JSON array of verdicts, no markdown. Example: [{"index":1,"verdict
 
   function toChartCategory(desc: string): string {
     const lower = desc.toLowerCase();
-    if (lower.startsWith('pictogram')) return 'pictogram';
     if (lower.startsWith('bar')) return 'bars';
     if (lower.startsWith('donut')) return 'donut';
     if (lower.startsWith('compare')) return 'compare';
@@ -472,12 +497,6 @@ Return ONLY a JSON array of verdicts, no markdown. Example: [{"index":1,"verdict
   for (const [slideIdx, failedTypes] of failedSlideCharts) {
     const slide = content.slides[slideIdx];
 
-    if (failedTypes.has('pictogram') && slide.pictogram) {
-      console.log(`[validation] Removing pictogram from slide ${slideIdx + 1}`);
-      delete slide.pictogram;
-      if (slide.chartType === 'pictogram') delete slide.chartType;
-      removedCount++;
-    }
     if (failedTypes.has('bars') && slide.bars) {
       console.log(`[validation] Removing bars from slide ${slideIdx + 1}`);
       delete slide.bars;

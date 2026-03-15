@@ -77,7 +77,7 @@ router.post('/pipeline/preview', async (req: Request, res: Response) => {
     const archetypeId = req.body?.archetype;
     const archetype = archetypeId
       ? getArchetypeById(archetypeId) || pickArchetype()
-      : pickArchetype();
+      : ARCHETYPES[Math.floor(Math.random() * ARCHETYPES.length)];
 
     const forceStyle = req.body?.style;
     const style = forceStyle || archetype.preferredStyles[Math.floor(Math.random() * archetype.preferredStyles.length)];

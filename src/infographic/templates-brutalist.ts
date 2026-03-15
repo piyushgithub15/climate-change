@@ -4,6 +4,10 @@ function esc(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function extractDomain(url: string): string {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');`;
 
 const RESET = `
@@ -237,48 +241,12 @@ function renderTrendChart(slide: SlideContent, theme: BrutalistTheme): string {
   `;
 }
 
-function renderPictogramChart(slide: SlideContent, theme: BrutalistTheme): string {
-  if (!slide.pictogram) return '';
-  const { filled, total, filledLabel, emptyLabel } = slide.pictogram;
-  const icons: string[] = [];
-  for (let i = 0; i < total; i++) {
-    const isFilled = i < filled;
-    const color = isFilled ? theme.accent : 'rgba(255,255,255,0.12)';
-    icons.push(`
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="${color}" opacity="${isFilled ? '1' : '0.3'}">
-          <circle cx="12" cy="7" r="4"/>
-          <path d="M12 13c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
-        </svg>
-      </div>
-    `);
-  }
-  return `
-    <div class="chart-card" style="padding: 30px; display:flex; flex-direction:column; align-items:center; gap:20px;">
-      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
-        ${icons.join('')}
-      </div>
-      <div style="display:flex; gap:28px; align-items:center; font-size:20px; font-family:'Space Grotesk',sans-serif;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="width:14px; height:14px; background:${theme.accent};"></div>
-          <span style="color:${theme.text};">${filled}/${total} ${esc(filledLabel)}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="width:14px; height:14px; background:rgba(255,255,255,0.12);"></div>
-          <span style="color:${theme.textMuted};">${total - filled}/${total} ${esc(emptyLabel)}</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function renderChart(slide: SlideContent, theme: BrutalistTheme): string {
   switch (slide.chartType) {
     case 'donut': return renderDonut(slide, theme);
     case 'compare': return renderCompare(slide, theme);
     case 'ranked': return renderRanked(slide, theme);
     case 'trend': return renderTrendChart(slide, theme);
-    case 'pictogram': return renderPictogramChart(slide, theme);
     case 'bars': default: return renderBars(slide, theme);
   }
 }
@@ -465,6 +433,10 @@ function renderFact(slide: SlideContent, num: number, total: number, theme: Brut
       font-size: 15px; color: ${theme.accent}; font-weight: 700; letter-spacing: 3px;
     }
     .source-text { font-size: 17px; color: ${theme.textMuted}; font-weight: 500; }
+    .source-domain {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px; color: ${theme.accent}; font-weight: 600; margin-left: auto; letter-spacing: 1px; opacity: 0.7;
+    }
   </style></head><body>
     <div class="wrap">
       <div class="warning-top"></div>
@@ -480,6 +452,7 @@ function renderFact(slide: SlideContent, num: number, total: number, theme: Brut
       <div class="source-bar">
         <span class="source-icon">SOURCE</span>
         <span class="source-text">${esc(slide.source || '')}</span>
+        ${slide.sourceUrl ? `<span class="source-domain">${esc(extractDomain(slide.sourceUrl))}</span>` : ''}
       </div>
     </div>
   </body></html>`;

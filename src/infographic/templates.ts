@@ -4,6 +4,10 @@ function esc(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function extractDomain(url: string): string {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap');`;
 
 const RESET = `
@@ -268,49 +272,12 @@ function renderTrendChart(slide: SlideContent, theme: ColorTheme): string {
   `;
 }
 
-function renderPictogramChart(slide: SlideContent, theme: ColorTheme): string {
-  if (!slide.pictogram) return '';
-  const { filled, total, filledLabel, emptyLabel } = slide.pictogram;
-  const icons: string[] = [];
-  for (let i = 0; i < total; i++) {
-    const isFilled = i < filled;
-    const color = isFilled ? theme.accent : theme.border;
-    const opacity = isFilled ? '1' : '0.3';
-    icons.push(`
-      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="${color}" opacity="${opacity}">
-          <circle cx="12" cy="7" r="4"/>
-          <path d="M12 13c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
-        </svg>
-      </div>
-    `);
-  }
-  return `
-    <div class="chart-card" style="padding: 30px; display:flex; flex-direction:column; align-items:center; gap:20px;">
-      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
-        ${icons.join('')}
-      </div>
-      <div style="display:flex; gap:28px; align-items:center; font-size:20px; font-family:'DM Sans',sans-serif;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="width:14px; height:14px; border-radius:50%; background:${theme.accent};"></div>
-          <span style="color:${theme.text};">${filled}/${total} ${filledLabel}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="width:14px; height:14px; border-radius:50%; background:${theme.border};"></div>
-          <span style="color:${theme.textSecondary};">${total - filled}/${total} ${emptyLabel}</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function renderChart(slide: SlideContent, theme: ColorTheme): string {
   switch (slide.chartType) {
     case 'donut': return renderDonutChart(slide, theme);
     case 'compare': return renderCompareChart(slide, theme);
     case 'ranked': return renderRankedChart(slide, theme);
     case 'trend': return renderTrendChart(slide, theme);
-    case 'pictogram': return renderPictogramChart(slide, theme);
     case 'bars':
     default: return renderBarsChart(slide, theme);
   }
@@ -498,6 +465,7 @@ function renderFactSlide(
     }
     .source-icon { font-size: 15px; color: ${theme.accent}; font-weight: 800; letter-spacing: 1px; }
     .source-text { font-size: 17px; color: ${theme.textSecondary}; font-weight: 500; }
+    .source-domain { font-size: 14px; color: ${theme.accent}; font-weight: 600; margin-left: auto; opacity: 0.7; }
   </style></head><body>
     <div class="wrap">
       <div class="progress">
@@ -512,6 +480,7 @@ function renderFactSlide(
       <div class="source-bar">
         <span class="source-icon">SOURCE</span>
         <span class="source-text">${esc(slide.source || '')}</span>
+        ${slide.sourceUrl ? `<span class="source-domain">${esc(extractDomain(slide.sourceUrl))}</span>` : ''}
       </div>
     </div>
   </body></html>`;

@@ -337,13 +337,13 @@ Use as many slides as needed to tell the chronological story properly.`,
 ];
 
 const WEEKDAY_SCHEDULE: [string, string, string, string][] = [
-  ['india-on-fire', 'uncomfortable-truth', 'brutal-stat', 'system-vs-you'],       // Sunday
-  ['the-indictment', 'india-on-fire', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
-  ['brutal-stat', 'system-vs-you', 'india-on-fire', 'the-indictment'],            // Tuesday
-  ['inequality-contrast', 'the-indictment', 'uncomfortable-truth', 'brutal-stat'], // Wednesday
-  ['uncomfortable-truth', 'india-on-fire', 'system-vs-you', 'myth-vs-reality'],   // Thursday
-  ['system-vs-you', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
-  ['myth-vs-reality', 'india-on-fire', 'if-nothing-changes', 'uncomfortable-truth'], // Saturday
+  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'system-vs-you'],      // Sunday
+  ['the-indictment', 'explainer-stack', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
+  ['india-on-fire', 'system-vs-you', 'policy-breakdown', 'the-indictment'],         // Tuesday
+  ['inequality-contrast', 'timeline', 'uncomfortable-truth', 'brutal-stat'],        // Wednesday
+  ['this-affects-you', 'localized-impact', 'system-vs-you', 'myth-vs-reality'],     // Thursday
+  ['explainer-stack', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
+  ['myth-vs-reality', 'if-nothing-changes', 'inequality-contrast', 'timeline'],     // Saturday
 ];
 
 export function pickArchetype(slotIndex = 0): ContentArchetype {
