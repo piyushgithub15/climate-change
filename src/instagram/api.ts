@@ -57,36 +57,40 @@ export async function createImageContainer(imageUrl: string, caption: string): P
 }
 
 export async function createCarouselItem(mediaUrl: string, isVideo: boolean): Promise<string> {
-  const token = await getValidPageToken();
-  const body: Record<string, unknown> = { is_carousel_item: true };
+  return retryOnTransient(async () => {
+    const token = await getValidPageToken();
+    const body: Record<string, unknown> = { is_carousel_item: true };
 
-  if (isVideo) {
-    body.media_type = 'VIDEO';
-    body.video_url = mediaUrl;
-  } else {
-    body.image_url = mediaUrl;
-  }
+    if (isVideo) {
+      body.media_type = 'VIDEO';
+      body.video_url = mediaUrl;
+    } else {
+      body.image_url = mediaUrl;
+    }
 
-  const res = await axios.post(
-    apiUrl(`${config.instagramAccountId}/media`),
-    body,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return res.data.id;
+    const res = await axios.post(
+      apiUrl(`${config.instagramAccountId}/media`),
+      body,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return res.data.id;
+  }, 'createCarouselItem');
 }
 
 export async function createCarouselContainer(childIds: string[], caption: string): Promise<string> {
-  const token = await getValidPageToken();
-  const res = await axios.post(
-    apiUrl(`${config.instagramAccountId}/media`),
-    {
-      media_type: 'CAROUSEL',
-      children: childIds.join(','),
-      caption,
-    },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return res.data.id;
+  return retryOnTransient(async () => {
+    const token = await getValidPageToken();
+    const res = await axios.post(
+      apiUrl(`${config.instagramAccountId}/media`),
+      {
+        media_type: 'CAROUSEL',
+        children: childIds.join(','),
+        caption,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return res.data.id;
+  }, 'createCarouselContainer');
 }
 
 export async function createReelContainer(videoUrl: string, caption: string): Promise<string> {
@@ -112,13 +116,29 @@ export async function checkContainerStatus(containerId: string): Promise<string>
 }
 
 export async function publishContainer(containerId: string): Promise<string> {
-  const token = await getValidPageToken();
-  const res = await axios.post(
-    apiUrl(`${config.instagramAccountId}/media_publish`),
-    { creation_id: containerId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return res.data.id;
+  const maxRetries = 4;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const token = await getValidPageToken();
+      const res = await axios.post(
+        apiUrl(`${config.instagramAccountId}/media_publish`),
+        { creation_id: containerId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data.id;
+    } catch (err: any) {
+      const isTransient = err?.response?.data?.error?.is_transient === true;
+      const statusCode = err?.response?.status;
+      if ((isTransient || statusCode === 500) && attempt < maxRetries) {
+        const wait = (attempt + 1) * 10_000;
+        console.log(`[instagram] Transient error on publish (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${wait / 1000}s...`);
+        await sleep(wait);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error(`publishContainer failed after ${maxRetries + 1} attempts`);
 }
 
 export async function checkRateLimit(): Promise<{ quota_usage: number; config: Record<string, unknown> }> {
@@ -185,4 +205,23 @@ export async function publishReel(videoUrl: string, caption: string): Promise<st
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function retryOnTransient<T>(fn: () => Promise<T>, label: string, maxRetries = 3): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const isTransient = err?.response?.data?.error?.is_transient === true;
+      const statusCode = err?.response?.status;
+      if ((isTransient || statusCode === 500) && attempt < maxRetries) {
+        const wait = (attempt + 1) * 8_000;
+        console.log(`[instagram] Transient error in ${label} (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${wait / 1000}s...`);
+        await sleep(wait);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error(`${label} failed after ${maxRetries + 1} attempts`);
 }

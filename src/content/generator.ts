@@ -117,26 +117,34 @@ export async function generateContent(
     ? `\nTONE: ${archetype.toneDirective}`
     : '\nYour tone is direct, factual, and educational — like a mini documentary in slides.';
 
-  const systemPrompt = `You create Instagram carousels about climate change. You are factual, direct, and urgent.
+  const systemPrompt = `You are a climate journalist writing Instagram carousels that feel like mini-documentaries — each slide should hit like a paragraph from a Pulitzer-winning investigation. You write with the depth of longform journalism compressed into visual slides.
 
-Your approach:
+EDITORIAL PRINCIPLES:
 - NAME THE GUILTY — but ONLY if the research facts below mention specific corporations, people, or entities. Never insert names that aren't in the research.
 - FOLLOW THE MONEY — expose profiteers, but only using data from the research facts.
 - ATTACK THE SYSTEM, NOT THE INDIVIDUAL — focus on systemic causes over individual blame.
-- GLOBAL AUDIENCE WITH LOCAL DEPTH. Your audience spans India and the world. Use whatever geography the research facts support — Indian data for India-focused archetypes, global data for global archetypes. Do NOT force an Indian angle when the research doesn't support it.
+- GLOBAL AUDIENCE WITH LOCAL DEPTH — use whatever geography the research facts support.
+- TELL A STORY, NOT A LIST — each slide must build on the previous one. The carousel should feel like a narrative arc with rising tension, not disconnected data points.
 
-STRICT DATA RULE: You have been provided with VERIFIED RESEARCH FACTS below. Use ONLY these facts for statistics, numbers, names, and sources. Every number, every stat, every company name, every comparison you use MUST come from the provided facts. Do NOT pull any data from your own knowledge. If a fact isn't in the research, don't use it.
+STRICT DATA RULE: Use ONLY the VERIFIED RESEARCH FACTS provided below. Every number, stat, company name, and comparison MUST come from the provided facts. Do NOT use your own knowledge for data. If a fact isn't in the research, don't use it.
 ${toneDirective}
 
-CRITICAL WRITING RULES:
+WRITING QUALITY — THIS IS NON-NEGOTIABLE:
 
-1. Every slide body MUST end with a SPECIFIC consequence backed by the research data — not generic statements.
+1. Each slide body must be 4-6 sentences of SUBSTANTIVE writing. Not filler. Not padding. Each sentence must either: present a fact, draw a connection, explain a mechanism, or deliver a consequence. If you can delete a sentence without losing meaning, rewrite it.
 
-BANNED: "health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices".
+2. ANALYSIS over DESCRIPTION. Don't just state facts — explain WHY they matter, HOW they connect to each other, and WHAT they reveal about the system. A good slide makes the reader understand something they didn't before.
 
-2. Use NUMBERS from the research facts. Not "many people affected" but exact figures from the facts.
+3. SPECIFIC CONSEQUENCES — every slide must end with a concrete, quantified consequence from the research. Not "this causes problems" but "this killed 1,200 people in Karachi in 2023."
 
-3. NEVER recycle generic stats. Do NOT use any statistic that is not explicitly in the VERIFIED RESEARCH FACTS section below. If the research is about ocean warming, your charts and stats must be about ocean warming — not about per-capita CO2 emissions or corporate rankings unless those appear in the research.`;
+4. NARRATIVE FLOW — slides must build on each other. Slide 2 should deepen what slide 1 introduced. Slide 3 should reveal what slides 1-2 set up. The final slide should deliver the emotional or intellectual payoff.
+
+BANNED PHRASES (instant quality failure):
+"health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices", "devastating consequences", "alarming rate", "wake-up call", "raises serious concerns", "it remains to be seen", "only time will tell".
+
+5. Use EXACT NUMBERS from the research facts. Never "many people" — always the specific figure.
+
+6. NEVER recycle generic stats. Every statistic must come from the VERIFIED RESEARCH FACTS and must be relevant to the specific topic.`;
 
   const highConfidence = facts.filter(f => f.confidence >= 7);
   const medConfidence = facts.filter(f => f.confidence >= 4 && f.confidence < 7);
@@ -193,9 +201,10 @@ ${archetypeSection}
 
 IMPORTANT RULES:
 1. Every slide MUST have a "source" field matching one of the verified research fact sources above.
-2. Every slide MUST have a primary stat and a secondary stat — taken directly from the research facts.
-3. Every slide MUST have exactly ONE chart. Use a DIFFERENT chart type for each slide. Pick from these 5 types.
+2. Every slide MUST have a primary stat taken directly from the research facts. Secondary stat is optional — only include if a second number genuinely strengthens the slide.
+3. Charts are OPTIONAL — only include a chart when the data naturally lends itself to visual comparison (rankings, proportions, trends over time, stark contrasts). A slide with powerful writing and a strong stat is BETTER than a slide with a forced chart. If you do include charts, use at most 2-3 across the entire carousel, not on every slide.
 4. CRITICAL — CHART DATA INTEGRITY: Every number displayed in a chart MUST come from a research fact above. Add a "factRef" field to EACH chart data point referencing the fact ID (e.g. "F1", "F3"). If you cannot find a research fact to back a chart data point, DO NOT include that data point. NEVER invent chart data.
+5. BODY TEXT QUALITY: Each slide body must be 4-6 sentences of analytical writing. Connect facts to causes, explain mechanisms, quantify consequences. Every sentence must earn its place.
 
 CHART TYPES (vary across slides — you MUST use at least 3 different types):
 
@@ -251,14 +260,14 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
   "coverSubtitle": "Hook that makes people swipe (max 15 words)",
   "slides": [
     {
-      "heading": "Heading (max 6 words)",
-      "body": "2-3 sentences with specific consequences and numbers. NEVER use vague phrases.",
-      "stat": "Primary number",
-      "statLabel": "What it represents",
-      "secondaryStat": "Secondary number",
+      "heading": "Heading (max 6 words, punchy)",
+      "body": "4-6 sentences of substantive analysis. State the fact, explain WHY it matters, connect it to the system, and end with a specific quantified consequence. Each sentence must add new information.",
+      "stat": "Primary number from research facts",
+      "statLabel": "What it represents (concise)",
+      "secondaryStat": "Optional secondary number — only if it genuinely strengthens the slide",
       "secondaryStatLabel": "What it means",
-      "chartType": "one of: bars, donut, compare, ranked, trend",
-      "[chartType key]": "data array/object matching the chosen chartType",
+      "chartType": "OPTIONAL — only include if data naturally suits visualization. One of: bars, donut, compare, ranked, trend",
+      "[chartType key]": "data array/object matching the chosen chartType — only if chartType is included",
       "source": "Specific data source from the verified facts",
       "sourceUrl": "URL of the source (from the research fact's URL field). If no URL available, leave empty string."
     }
@@ -270,7 +279,7 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
 }`;
 
   const maxSlides = archetype?.slideRange?.[1] ?? 4;
-  const maxTokens = 1800 + (maxSlides * 350);
+  const maxTokens = 2800 + (maxSlides * 500);
 
   const response = await client.chat.completions.create({
     model: 'gpt-5.4',
@@ -278,7 +287,7 @@ Respond in this exact JSON format (no markdown, no code fences, just raw JSON):
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
     ],
-    temperature: 0.7,
+    temperature: 0.5,
     max_completion_tokens: maxTokens,
   });
 

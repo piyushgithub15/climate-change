@@ -84,18 +84,34 @@ async function searchWithTavily(
   const client = getTavilyClient();
   const currentYear = new Date().getFullYear();
 
-  const query = `${subject} latest data statistics ${currentYear}`;
+  const queries = [
+    `${subject} latest data statistics ${currentYear}`,
+    `${subject} impact consequences deaths economic cost report`,
+    `${subject} corporate responsibility who is responsible investigation`,
+  ];
 
-  const response = await client.search(query, {
-    searchDepth: 'advanced',
-    maxResults: 10,
-    includeDomains: AUTHORITATIVE_DOMAINS,
-    timeRange: 'year',
-    includeAnswer: false,
-  });
+  const allResults = new Map<string, TavilyResult>();
 
-  console.log(`[researcher] Tavily returned ${response.results.length} results from authoritative sources`);
-  return response.results;
+  for (const query of queries) {
+    try {
+      const response = await client.search(query, {
+        searchDepth: 'advanced',
+        maxResults: 8,
+        includeDomains: AUTHORITATIVE_DOMAINS,
+        timeRange: 'year',
+        includeAnswer: false,
+      });
+      for (const r of response.results) {
+        if (!allResults.has(r.url)) allResults.set(r.url, r);
+      }
+    } catch (err: any) {
+      console.warn(`[researcher] Tavily query failed: ${err.message}`);
+    }
+  }
+
+  const results = [...allResults.values()].sort((a, b) => b.score - a.score);
+  console.log(`[researcher] Tavily returned ${results.length} results from ${queries.length} queries`);
+  return results;
 }
 
 interface PerplexityResult {
