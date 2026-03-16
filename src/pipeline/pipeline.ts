@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { CLIMATE_TOPICS } from '../content/topics';
-import { generateContent } from '../content/generator';
+import { generateContent, GeneratedContent } from '../content/generator';
 import { researchTopic, ResearchFact } from '../content/researcher';
 import { fetchUnsplashImage } from '../content/unsplash';
 import { renderCarouselSlides } from '../infographic/renderer';
@@ -9,6 +9,7 @@ import { publishCarousel, checkRateLimit } from '../instagram/api';
 import { pickArchetype, getSlotTemplate, getArchetypeById, ContentArchetype } from '../content/archetypes';
 import { pickCaptionStyle } from '../content/caption-styles';
 import { discoverClimateEvent, ClimateEvent } from '../content/event-discovery';
+import { isTelegramConfigured, sendForApproval } from '../telegram/bot';
 import {
   createPost,
   createPipelineLog,
@@ -87,7 +88,28 @@ export async function runPipeline(slotIndex = 0): Promise<{ postId: number; topi
     const slidePaths = await renderCarouselSlides(content, style, bgImagePath);
     console.log(`[pipeline] ${slidePaths.length} slides rendered`);
 
-    console.log('[pipeline] Step 5/6: Uploading slides to Cloudinary...');
+    if (isTelegramConfigured()) {
+      console.log('[pipeline] Step 5/7: Sending to Telegram for approval...');
+      const decision = await sendForApproval(slidePaths, content, facts, archetype.name, topic.subject);
+
+      if (decision === 'reject') {
+        console.log('[pipeline] Post REJECTED via Telegram. Skipping publish.');
+        await updatePipelineLog(logId, { status: 'failed', error_message: 'Rejected via Telegram' });
+        cleanup(...slidePaths, ...(bgImagePath ? [bgImagePath] : []));
+        return { postId: -1, topicId: topic.id };
+      }
+
+      if (decision === 'regenerate') {
+        console.log('[pipeline] Regeneration requested via Telegram. Restarting pipeline...');
+        await updatePipelineLog(logId, { status: 'failed', error_message: 'Regeneration requested' });
+        cleanup(...slidePaths, ...(bgImagePath ? [bgImagePath] : []));
+        return runPipeline(slotIndex);
+      }
+
+      console.log('[pipeline] Post APPROVED via Telegram. Publishing...');
+    }
+
+    console.log('[pipeline] Step 6/7: Uploading slides to Cloudinary...');
     if (!isCloudinaryConfigured()) {
       throw new Error(
         'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env'
@@ -100,7 +122,7 @@ export async function runPipeline(slotIndex = 0): Promise<{ postId: number; topi
       console.log(`[pipeline] Uploaded slide ${i + 1}/${slidePaths.length}`);
     }
 
-    console.log('[pipeline] Step 6/6: Publishing carousel to Instagram...');
+    console.log('[pipeline] Step 7/7: Publishing carousel to Instagram...');
 
     try {
       const rateLimit = await checkRateLimit();
@@ -207,7 +229,28 @@ export async function runEventPipeline(slotIndex = 0): Promise<{ postId: number;
     const slidePaths = await renderCarouselSlides(content, style, bgImagePath);
     console.log(`[event-pipeline] ${slidePaths.length} slides rendered`);
 
-    console.log('[event-pipeline] Step 5/6: Uploading to Cloudinary...');
+    if (isTelegramConfigured()) {
+      console.log('[event-pipeline] Step 5/7: Sending to Telegram for approval...');
+      const decision = await sendForApproval(slidePaths, content, facts, 'Breaking Climate Event', event.headline);
+
+      if (decision === 'reject') {
+        console.log('[event-pipeline] Post REJECTED via Telegram.');
+        await updatePipelineLog(logId, { status: 'failed', error_message: 'Rejected via Telegram' });
+        cleanup(...slidePaths, ...(bgImagePath ? [bgImagePath] : []));
+        return null;
+      }
+
+      if (decision === 'regenerate') {
+        console.log('[event-pipeline] Regeneration requested. Restarting event pipeline...');
+        await updatePipelineLog(logId, { status: 'failed', error_message: 'Regeneration requested' });
+        cleanup(...slidePaths, ...(bgImagePath ? [bgImagePath] : []));
+        return runEventPipeline(slotIndex);
+      }
+
+      console.log('[event-pipeline] Post APPROVED. Publishing...');
+    }
+
+    console.log('[event-pipeline] Step 6/7: Uploading to Cloudinary...');
     if (!isCloudinaryConfigured()) {
       throw new Error('Cloudinary is not configured');
     }
@@ -217,7 +260,7 @@ export async function runEventPipeline(slotIndex = 0): Promise<{ postId: number;
       publicUrls.push(url);
     }
 
-    console.log('[event-pipeline] Step 6/6: Publishing to Instagram...');
+    console.log('[event-pipeline] Step 7/7: Publishing to Instagram...');
     try {
       const rateLimit = await checkRateLimit();
       const usage = rateLimit.quota_usage ?? 0;

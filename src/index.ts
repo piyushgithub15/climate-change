@@ -6,6 +6,7 @@ import { initSchema } from './db/database';
 import { getValidPageToken } from './instagram/api';
 import { startScheduler } from './scheduler/scheduler';
 import { startAutoPoster } from './pipeline/autoPoster';
+import { initTelegramBot } from './telegram/bot';
 import postsRouter from './routes/posts';
 import pipelineRouter from './routes/pipeline';
 
@@ -40,6 +41,7 @@ async function main() {
 
   startScheduler();
   startAutoPoster();
+  initTelegramBot();
 
   app.listen(config.port, () => {
     console.log(`\n  Instagram Auto-Poster running at http://localhost:${config.port}\n`);

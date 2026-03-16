@@ -30,6 +30,10 @@ export const config = {
     apiKey: process.env.CLOUDINARY_API_KEY || '',
     apiSecret: process.env.CLOUDINARY_API_SECRET || '',
   },
+  telegram: {
+    botToken: process.env.TELEGRAM_BOT_TOKEN || '',
+    chatId: process.env.TELEGRAM_CHAT_ID || '',
+  },
   port: parseInt(process.env.PORT || '3000', 10),
   graphApiVersion: 'v25.0',
   graphApiBaseUrl: 'https://graph.facebook.com',
