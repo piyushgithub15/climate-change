@@ -3,6 +3,12 @@ import fs from 'fs';
 import { config } from '../config';
 import { ResearchFact } from '../content/researcher';
 import { GeneratedContent } from '../content/generator';
+import {
+  pauseAutoPoster,
+  resumeAutoPoster,
+  isAutoPosterPaused,
+  isAutoPosterRunning,
+} from '../pipeline/autoPoster';
 
 let bot: TelegramBot | null = null;
 
@@ -13,6 +19,10 @@ export function isTelegramConfigured(): boolean {
   return !!(config.telegram.botToken && config.telegram.chatId);
 }
 
+function isOwner(chatId: number | string): boolean {
+  return String(chatId) === config.telegram.chatId;
+}
+
 export function initTelegramBot(): void {
   if (!isTelegramConfigured()) {
     console.log('[telegram] Not configured — skipping bot init');
@@ -20,6 +30,43 @@ export function initTelegramBot(): void {
   }
 
   bot = new TelegramBot(config.telegram.botToken, { polling: true });
+
+  bot.onText(/\/stop/, async (msg) => {
+    if (!isOwner(msg.chat.id)) return;
+    pauseAutoPoster();
+    await bot!.sendMessage(msg.chat.id, '⏸ Auto-posting PAUSED.\n\nNo new posts will be generated or published until you send /start.\n\nPosts already in progress will finish.');
+  });
+
+  bot.onText(/\/start/, async (msg) => {
+    if (!isOwner(msg.chat.id)) return;
+    if (!isAutoPosterPaused()) {
+      await bot!.sendMessage(msg.chat.id, '▶️ Auto-posting is already running.');
+      return;
+    }
+    resumeAutoPoster();
+    await bot!.sendMessage(msg.chat.id, '▶️ Auto-posting RESUMED.\n\nPosts will be generated at the next scheduled time.');
+  });
+
+  bot.onText(/\/status/, async (msg) => {
+    if (!isOwner(msg.chat.id)) return;
+    const paused = isAutoPosterPaused();
+    const running = isAutoPosterRunning();
+    const hours = config.pipeline.postingHours.map(h => `${h}:00`).join(', ');
+    const tz = config.pipeline.timezone;
+
+    const status = [
+      `${paused ? '⏸ PAUSED' : '▶️ ACTIVE'}`,
+      `${running ? '🔄 A pipeline is currently running' : '💤 No pipeline running right now'}`,
+      `\n⏰ Schedule: ${hours} (${tz})`,
+      `📊 Pending approvals: ${pendingApprovals.size}`,
+      `\nCommands:`,
+      `/stop — pause auto-posting`,
+      `/start — resume auto-posting`,
+      `/status — this message`,
+    ].join('\n');
+
+    await bot!.sendMessage(msg.chat.id, status);
+  });
 
   bot.on('callback_query', async (query) => {
     if (!query.data) return;

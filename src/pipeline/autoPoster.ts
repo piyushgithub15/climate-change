@@ -3,9 +3,28 @@ import { config } from '../config';
 import { runPipeline, runEventPipeline } from './pipeline';
 
 let isRunning = false;
+let isPaused = false;
 let todayEventSlot = -1;
 let eventSlotDate = '';
 let eventUsedToday = false;
+
+export function pauseAutoPoster(): void {
+  isPaused = true;
+  console.log('[auto-poster] PAUSED via command');
+}
+
+export function resumeAutoPoster(): void {
+  isPaused = false;
+  console.log('[auto-poster] RESUMED via command');
+}
+
+export function isAutoPosterPaused(): boolean {
+  return isPaused;
+}
+
+export function isAutoPosterRunning(): boolean {
+  return isRunning;
+}
 
 function pickEventSlot(): number {
   const today = new Date().toISOString().slice(0, 10);
@@ -26,6 +45,10 @@ function randomOffsetMs(): number {
 }
 
 async function triggerPipeline(slotIndex = 0) {
+  if (isPaused) {
+    console.log('[auto-poster] Paused — skipping scheduled post');
+    return;
+  }
   if (isRunning) {
     console.log('[auto-poster] Pipeline already running, skipping');
     return;
