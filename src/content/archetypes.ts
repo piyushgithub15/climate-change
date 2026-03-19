@@ -366,11 +366,11 @@ CRITICAL TONE: This is quiet devastation, not shouting. Write like a philosopher
 ];
 
 const WEEKDAY_SCHEDULE: [string, string, string, string][] = [
-  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'philosophical'],       // Sunday
+  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'the-indictment'],     // Sunday
   ['the-indictment', 'explainer-stack', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
-  ['india-on-fire', 'system-vs-you', 'policy-breakdown', 'the-indictment'],         // Tuesday
-  ['inequality-contrast', 'timeline', 'philosophical', 'brutal-stat'],              // Wednesday
-  ['this-affects-you', 'localized-impact', 'system-vs-you', 'myth-vs-reality'],     // Thursday
+  ['india-on-fire', 'system-vs-you', 'policy-breakdown', 'brutal-stat'],            // Tuesday
+  ['inequality-contrast', 'timeline', 'philosophical', 'myth-vs-reality'],          // Wednesday (1 philosophical per week)
+  ['this-affects-you', 'localized-impact', 'system-vs-you', 'explainer-stack'],     // Thursday
   ['explainer-stack', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
   ['myth-vs-reality', 'if-nothing-changes', 'inequality-contrast', 'timeline'],     // Saturday
 ];
