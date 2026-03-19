@@ -1,4 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
+import { Router, Request, Response } from 'express';
 import fs from 'fs';
 import { config } from '../config';
 import { ResearchFact } from '../content/researcher';
@@ -23,13 +24,8 @@ function isOwner(chatId: number | string): boolean {
   return String(chatId) === config.telegram.chatId;
 }
 
-export function initTelegramBot(): void {
-  if (!isTelegramConfigured()) {
-    console.log('[telegram] Not configured — skipping bot init');
-    return;
-  }
-
-  bot = new TelegramBot(config.telegram.botToken, { polling: true });
+function registerHandlers(): void {
+  if (!bot) return;
 
   bot.onText(/\/stop/, async (msg) => {
     if (!isOwner(msg.chat.id)) return;
@@ -104,12 +100,51 @@ export function initTelegramBot(): void {
       resolver('regenerate');
     }
   });
+}
+
+export function initTelegramBot(): void {
+  if (!isTelegramConfigured()) {
+    console.log('[telegram] Not configured — skipping bot init');
+    return;
+  }
+
+  const webhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
+
+  if (webhookUrl) {
+    bot = new TelegramBot(config.telegram.botToken, { polling: false });
+    registerHandlers();
+
+    bot.setWebHook(webhookUrl).then(() => {
+      console.log(`[telegram] Webhook set: ${webhookUrl}`);
+    }).catch(err => {
+      console.error(`[telegram] Failed to set webhook:`, err.message);
+    });
+
+    console.log('[telegram] Bot initialized with webhook mode');
+    return;
+  }
+
+  bot = new TelegramBot(config.telegram.botToken, { polling: true });
+  registerHandlers();
 
   bot.on('polling_error', (err) => {
     console.error('[telegram] Polling error:', err.message);
   });
 
-  console.log('[telegram] Bot initialized and listening for approvals');
+  console.log('[telegram] Bot initialized with polling mode');
+}
+
+export function getTelegramWebhookRouter(): Router {
+  const router = Router();
+
+  router.post('/telegram/webhook', (req: Request, res: Response) => {
+    if (bot) {
+      bot.processUpdate(req.body);
+    }
+    res.sendStatus(200);
+  });
+
+  return router;
 }
 
 export async function sendForApproval(

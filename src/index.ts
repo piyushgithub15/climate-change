@@ -6,7 +6,7 @@ import { initSchema } from './db/database';
 import { getValidPageToken } from './instagram/api';
 import { startScheduler } from './scheduler/scheduler';
 import { startAutoPoster } from './pipeline/autoPoster';
-import { initTelegramBot } from './telegram/bot';
+import { initTelegramBot, getTelegramWebhookRouter } from './telegram/bot';
 import postsRouter from './routes/posts';
 import pipelineRouter from './routes/pipeline';
 
@@ -22,6 +22,7 @@ async function main() {
 
   app.use('/api', postsRouter);
   app.use('/api', pipelineRouter);
+  app.use('/api', getTelegramWebhookRouter());
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
