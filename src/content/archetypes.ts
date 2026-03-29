@@ -25,84 +25,83 @@ export const ARCHETYPES: ContentArchetype[] = [
     preferredStyles: ['noir', 'editorial'],
     slideRange: [2, 3],
     researchMethod: 'tavily',
-    researchDirective: `Find the single MOST SHOCKING statistic about this topic.
-1. The one number that would stop someone mid-scroll — a percentage, a body count, an economic figure, a comparison
-2. Context for that number — what does it mean in human terms? Compare it to something relatable
-3. Who is responsible — name the corporations, countries, or systems behind this number
-4. A secondary stat that reinforces or contrasts with the main one
-5. Who suffers the most — name specific countries, populations, or communities`,
+    researchDirective: `Find the single MOST STRIKING statistic about this topic.
+1. The one number that would stop someone mid-scroll — a percentage, a death toll, an economic figure, a comparison
+2. Context for that number — what does it mean in measurable terms? Compare it to something relatable
+3. A secondary stat that reinforces or contrasts with the main one
+4. Geographic and demographic breakdown — which countries, populations, or regions are most affected, with numbers`,
     coverPrompt:
-      'Cover MUST be a single massive statistic as the title — just the number (e.g. "77%") with a short subtitle explaining it (e.g. "of all emissions come from just 10% of people"). Make it punchy and impossible to scroll past.',
+      'Cover MUST be a single massive statistic as the title — just the number (e.g. "77%") with a short subtitle explaining it (e.g. "of all emissions come from just 10% of the global population"). Make it impossible to scroll past.',
     slidePrompt: `Create 2-3 slides (not counting the cover). Structure:
-- First slide: CONTEXT — explain where this number comes from and why most people don't know it. Use global data.
-- Second slide: COMPARISON — compare between countries or regions. Think Global North vs Global South. Include who suffers because of this number — name specific countries, deaths, displacement, economic losses.
-- Final slide (optional, use if the data supports it): Make the heading "Save This." and write a 2-sentence summary of why this matters. Include a final powerful stat.
+- First slide: CONTEXT — explain where this number comes from. Use global data to show scale.
+- Second slide: BREAKDOWN — compare across countries or regions with per-capita and total figures. Include measurable consequences — deaths, displacement, economic losses.
+- Final slide (optional): Make the heading "The Full Picture." and write a 2-sentence data summary. Include a final powerful stat.
 
 Use fewer slides if the stat hits harder with brevity. Not every post needs 3 slides.`,
-    toneDirective: 'Bold, punchy, no fluff. Short sentences. Oversized impact. Every word must hit hard.',
-    lastSlideCta: 'Save This.',
+    toneDirective: 'Cold, precise, no fluff. Short sentences. Let the numbers do the work. Every word earns its place through data.',
+    lastSlideCta: 'The Full Picture.',
   },
   {
     id: 'this-affects-you',
-    name: 'The "This Affects You"',
+    name: 'The Personal Impact',
     goal: 'Personal relevance + comments',
     preferredStyles: ['clean', 'editorial'],
     slideRange: [3, 4],
     researchMethod: 'tavily',
     researchDirective: `Find data showing how this topic DIRECTLY AFFECTS everyday life:
-1. Consumer price impacts — food, energy, water, insurance costs linked to this topic
-2. Health impacts on ordinary people — heat-related illness, air quality, disease spread
-3. Real examples from different countries where people are already experiencing these effects
-4. Projections for the next 5-10 years that show worsening personal impact`,
+1. Consumer price impacts — food, energy, water, insurance costs linked to this topic, with specific figures
+2. Health data — heat-related mortality, air quality measurements, disease incidence rates
+3. Real examples from different countries where these effects are already measurable
+4. Projections for the next 5-10 years from scientific models`,
     coverPrompt:
-      'Cover title must use SECOND PERSON — address the reader directly. Format: "How [climate topic] will affect your [everyday thing]" (e.g., "How Climate Change Will Raise Your Food Prices", "Why Your Water Bill Will Double by 2040", "How Global Warming Affects Your Health"). Make it universally relevant — not country-specific.',
-    slidePrompt: `Create 3-4 slides (not counting the cover). Structure (use "you/your" throughout):
-- First slide: Explain how this impacts everyday life WORLDWIDE — food prices, energy costs, water scarcity, extreme heat. Use data from multiple countries.
-- Middle slides: Show the data — frame it as "This means you will..." with global examples. Show what's already happening with real cases from different continents.
-- Final slide: End with a provocative QUESTION as the heading (e.g., "Are You Prepared?"). The body should challenge the reader to think or act.`,
-    toneDirective: 'Second person throughout. Personal, relatable, conversational. Globally relevant — a reader in India, Brazil, or Germany should all feel this is about THEIR life.',
+      'Cover title must use SECOND PERSON — address the reader directly. Format: "How [climate topic] affects your [everyday thing]" (e.g., "How Climate Change Raises Your Food Prices", "Why Your Water Bill Is Doubling", "What Global Warming Does to Your Health"). Make it universally relevant — not country-specific.',
+    slidePrompt: `Create 3-4 slides (not counting the cover). Structure:
+- First slide: Present data on everyday impacts WORLDWIDE — food prices, energy costs, water scarcity, extreme heat. Use data from multiple countries.
+- Middle slides: Show the data with specific figures. Present real cases from different continents with measured impacts.
+- Final slide: Present projections — what the data says about the next 10-20 years. End with the most significant projected number.`,
+    toneDirective: 'Second person throughout. Factual, direct, data-anchored. A reader in India, Brazil, or Germany should see their reality reflected in the numbers.',
     lastSlideCta: '',
   },
   {
     id: 'myth-vs-reality',
-    name: 'Myth vs Reality',
+    name: 'Myth vs Data',
     goal: 'Shareability',
     preferredStyles: ['editorial', 'clean'],
     slideRange: [3, 4],
     researchMethod: 'both',
-    researchDirective: `Find data to DEBUNK a common misconception about this topic:
-1. The most widely believed misconception or myth — what do most people think?
-2. Who propagates this myth — which corporations, politicians, industry groups, or media?
-3. Any advertising campaigns, PR efforts, or lobbying that created or sustains this myth
-4. How much money has been spent promoting this false narrative`,
+    researchDirective: `Find data that CONTRADICTS a common assumption about this topic:
+1. The most widely held assumption — what do most people believe?
+2. The actual measured data that contradicts this assumption — peer-reviewed studies, government reports, scientific measurements
+3. The scale of the gap between assumption and reality — quantify how far off the common belief is
+4. Historical data showing when and how the assumption diverged from measured reality`,
     coverPrompt:
-      'Cover title must start with "Myth:" followed by a common climate misconception (e.g., "Myth: Individual action can solve climate change", "Myth: Renewable energy is too expensive"). Subtitle should hint at the reality.',
+      'Cover title must start with "Assumption:" followed by a common climate misconception (e.g., "Assumption: Individual action can solve climate change", "Assumption: Renewable energy is too expensive"). Subtitle should tease the data.',
     slidePrompt: `Create 3-4 slides (not counting the cover). Structure:
-- First slide: "Reality:" as the heading — state the truth clearly and directly with data that demolishes the myth.
-- Middle slides: EVIDENCE — provide the strongest supporting data, studies, or examples. Explain WHO benefits from this misconception (corporations, industries, lobbyists) and how much they spend maintaining it.
-- Final slide: Heading should be "Share This With Someone Who Needs To Know." Brief summary + the single most powerful counter-stat.`,
-    toneDirective: 'Myth-busting, authoritative, slightly confrontational. The tone should make the reader feel smart for knowing the truth.',
-    lastSlideCta: 'Share This.',
+- First slide: "The Data:" as the heading — state what the numbers actually show, directly contradicting the assumption.
+- Middle slides: EVIDENCE — provide the strongest supporting data, studies, or measurements. Show the gap between the common assumption and measured reality with specific figures.
+- Final slide: Summary with the single most powerful data point that settles the question.`,
+    toneDirective: 'Precise, evidence-based, clinical. Present the data and let the contrast between assumption and measurement speak for itself.',
+    lastSlideCta: '',
   },
   {
     id: 'inequality-contrast',
-    name: 'The Inequality Contrast',
-    goal: 'Emotional reaction',
+    name: 'The Disparity Data',
+    goal: 'Engagement through stark contrasts',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [3, 4],
     researchMethod: 'tavily',
-    researchDirective: `Find data showing GLOBAL CLIMATE INEQUALITY:
-1. Per-capita emissions and consumption data for the top polluting nations (USA, EU, China, Gulf states)
-2. Climate damage data for the most affected nations — deaths, GDP loss, displacement numbers
-3. Climate finance promises vs actual delivery — how much was pledged vs paid
-4. The stark contrast: who caused the problem vs who pays the price, with specific per-capita and total numbers`,
+    researchDirective: `Find data showing GLOBAL CLIMATE DISPARITIES:
+1. Per-capita emissions and consumption data across income groups and nations — with exact figures
+2. Climate impact data for the most affected nations — measured deaths, GDP loss percentages, displacement figures
+3. Climate finance data — amounts pledged vs amounts disbursed, with dates and figures
+4. The numerical gap — per-capita emissions of top emitters vs per-capita climate damage costs in vulnerable nations`,
     coverPrompt:
-      'Cover title must present a STARK CONTRAST between two sides of the world (e.g., "Global North vs Global South", "USA vs Bangladesh", "Europe vs Sub-Saharan Africa", "G7 vs Small Island Nations"). Use "vs" in the title. Subtitle should hint at the injustice.',
-    slidePrompt: `Create 3-4 slides (not counting the cover). Structure (GLOBAL INEQUALITY — compare countries/regions):
-- First slide: THE POLLUTERS — emissions, consumption, and wealth data for rich nations. Name specific countries. Use per-capita and total numbers.
-- Middle slides: THE VICTIMS — climate damage in vulnerable nations. Name specific countries. Then explain the structural inequality: who created the problem vs who pays.
-- Final slide: DISCUSSION PROMPT — heading should be a globally relevant question (e.g., "Is This Climate Justice?"). Body should challenge the international status quo.`,
-    toneDirective: 'Emotionally charged, stark contrasts between nations. Use compare charts. Make global inequality feel visceral and unfair.',
+      'Cover title must present a STARK DATA CONTRAST between two groups (e.g., "15 Tonnes vs 0.1 Tonnes", "USA vs Bangladesh: The Numbers", "Top 10% vs Bottom 50%"). Subtitle should state what the numbers represent.',
+    slidePrompt: `Create 3-4 slides (not counting the cover). Structure:
+- First slide: HIGH EMITTERS — emissions, consumption, and per-capita data for top-emitting nations. Name specific countries with exact figures.
+- Middle slides: HIGH IMPACT — climate damage data for vulnerable nations. Deaths, GDP loss, displacement — all with numbers. Then present the per-capita comparison side by side.
+- Final slide: Present climate finance data — what was pledged vs what was delivered. End with the single most striking disparity figure.`,
+    toneDirective: 'Clinical, contrast-driven. Present both sides of the data with equal precision. The disparity is in the numbers — no commentary needed.',
     lastSlideCta: '',
   },
   {
@@ -113,43 +112,43 @@ Use fewer slides if the stat hits harder with brevity. Not every post needs 3 sl
     slideRange: [4, 6],
     researchMethod: 'tavily',
     researchDirective: `Find CHRONOLOGICAL data for a timeline visualization:
-1. The earliest relevant data point — when this problem started, with exact year and numbers
-2. Key milestone years between then and now — what changed, what got worse, what policy was passed or failed
+1. The earliest relevant data point — when this was first measured, with exact year and numbers
+2. Key milestone years between then and now — what changed, what was measured, what thresholds were crossed
 3. The current state — most recent data from this year or last year
 4. Scientific projections for 2030 and 2050 from IPCC, IEA, or equivalent bodies
-5. Tipping points or thresholds — at what level does the damage become irreversible`,
+5. Known thresholds — at what measured level do cascading effects begin`,
     coverPrompt:
-      'Cover title must be a TIME RANGE (e.g., "Climate Timeline: 1990 → 2050", "The Next 25 Years of Climate Change", "From Paris 2015 to Crisis 2050"). Subtitle should create curiosity about the future.',
+      'Cover title must be a TIME RANGE (e.g., "Climate Data: 1990 → 2050", "The Next 25 Years in Numbers", "From 280 ppm to 420 ppm"). Subtitle should state the measured trend.',
     slidePrompt: `Create 4-6 slides (not counting the cover). Structure (CHRONOLOGICAL — each slide covers one time period):
-- First slide: THE ORIGINS — the earliest relevant data point or event. When did this begin?
-- Middle slides: ESCALATION — each subsequent slide moves forward in time, showing how the situation worsened. Use one specific year or period per slide. Include trend data.
-- Second-to-last slide: RIGHT NOW — the current state with the latest available data.
-- Final slide: THE PROJECTION — what happens by 2050 if the trajectory continues. Make the heading year-based (e.g., "2050"). Paint a vivid picture of consequences.
+- First slide: THE BASELINE — the earliest relevant measurement. What was the starting point?
+- Middle slides: THE TRAJECTORY — each subsequent slide moves forward in time, showing measured changes. One specific year or period per slide with exact figures. Include trend data.
+- Second-to-last slide: CURRENT STATE — the latest available measurements.
+- Final slide: THE PROJECTION — what models project for 2050 under current trajectory. State the projected figures and their confidence intervals where available.
 
-Use as many slides as needed to tell the chronological story properly.`,
-    toneDirective: 'Sequential narrative building tension. Each slide should feel like turning a page. The future slides should create urgency.',
+Use as many slides as needed to tell the chronological data story properly.`,
+    toneDirective: 'Sequential, measured, building through data accumulation. Each slide adds another data point. The trajectory speaks for itself.',
     lastSlideCta: '',
   },
   {
     id: 'if-nothing-changes',
-    name: 'The "If Nothing Changes"',
-    goal: 'Emotional tension + urgency',
+    name: 'The Projection',
+    goal: 'Data-driven urgency',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [4, 6],
     researchMethod: 'tavily',
-    researchDirective: `Find data showing CASCADING CONSEQUENCES if current trends continue:
-1. The most immediate consequence — what happens first and when
-2. Second-order effects — how the first consequence triggers more damage
-3. Worst-case projections from scientific models — what 2050 looks like under business-as-usual
-4. The alternative scenario — what changes if corrective action is taken now, with specific targets`,
+    researchDirective: `Find data showing PROJECTED CONSEQUENCES if current measured trends continue:
+1. The most immediate projected consequence — what models predict will happen first, and when
+2. Second-order effects — how the first consequence triggers measurable cascading impacts
+3. Worst-case scenario projections from scientific models — what 2050 looks like under business-as-usual with specific figures
+4. The alternative scenario — what models project if specific targets are met, with exact thresholds`,
     coverPrompt:
-      'Cover title must start with "If" — a conditional future scenario (e.g., "If Fossil Fuel Expansion Continues...", "If We Lose the Amazon...", "If Arctic Ice Disappears..."). Subtitle should hint at devastating consequences.',
-    slidePrompt: `Create 4-6 slides (not counting the cover). Structure (ESCALATING consequences):
-- First slide: FIRST CONSEQUENCE — the most immediate and tangible impact. What happens first?
-- Middle slides: CHAIN REACTION — each slide escalates, showing how one consequence triggers the next. Build from tangible to systemic to catastrophic.
-- Second-to-last slide: WORST CASE — the most severe long-term outcome. Paint a vivid, data-backed picture.
-- Final slide: Heading must be "What Should Happen Instead?" — present the alternative path, what needs to change, and who needs to act.`,
-    toneDirective: 'Warning tone, building dread. Each slide should feel heavier than the last. The final slide should feel like relief — the way out.',
+      'Cover title must start with "If" — a conditional future based on current data (e.g., "If Current Emissions Continue...", "If Arctic Ice Loss Accelerates...", "If Deforestation Rates Hold..."). Subtitle should state the key projected figure.',
+    slidePrompt: `Create 4-6 slides (not counting the cover). Structure (ESCALATING projections):
+- First slide: FIRST PROJECTION — the most immediate modeled consequence. What data says happens first?
+- Middle slides: CASCADE — each slide presents the next projected consequence, showing how one measured effect triggers another. Build from near-term to long-term.
+- Second-to-last slide: WORST-CASE MODEL — the most severe projected outcome under business-as-usual. Cite the model and its assumptions.
+- Final slide: ALTERNATIVE MODEL — heading should state the alternative scenario. Present what models project if specific emission targets are met. State the exact targets needed.`,
+    toneDirective: 'Projection-based, clinical. Present model outputs and their assumptions. The data trajectory tells the story without editorial commentary.',
     lastSlideCta: '',
   },
   {
@@ -161,42 +160,42 @@ Use as many slides as needed to tell the chronological story properly.`,
     researchMethod: 'tavily',
     researchDirective: `Find EDUCATIONAL data to explain this topic clearly:
 1. A clear, jargon-free definition of the concept from authoritative sources
-2. One specific, concrete real-world example that illustrates the concept
-3. The most important numbers that quantify this concept — scale, impact, trend
+2. One specific, concrete real-world example that illustrates the concept with measured data
+3. The most important numbers that quantify this concept — scale, rate, trend
 4. Primary sources and key reports that form the basis of understanding this topic`,
     coverPrompt:
       'Cover title must be a QUESTION starting with "What is" or "How does" (e.g., "What Is Climate Inequality?", "How Does Carbon Trading Work?", "What Are Scope 3 Emissions?"). Subtitle should promise a clear explanation.',
     slidePrompt: `Create 4-5 slides (not counting the cover). Structure (EDUCATIONAL — building understanding):
 - First slide: DEFINITION — simple, jargon-free explanation. Define the concept in 2-3 sentences anyone can understand.
-- Second slide: REAL-WORLD EXAMPLE — one specific, concrete example that illustrates the concept. Name companies, places, or events.
-- Third slide: KEY DATA — the most important numbers that quantify this concept. Make the data tell the story.
-- Fourth slide: DEEPER CONTEXT — connect this concept to the broader climate picture. Why does understanding this matter?
-- Final slide (optional): SOURCES & SIGNIFICANCE — heading should summarize why this matters. Cite the primary sources used.`,
-    toneDirective: 'Academic but accessible. Clean, structured, no opinions — just clear explanation. Think "mini-lecture" not "rant."',
+- Second slide: REAL-WORLD EXAMPLE — one specific, concrete example that illustrates the concept. Name places, entities, or events with measured data.
+- Third slide: KEY DATA — the most important numbers that quantify this concept. Scale, rate, trend.
+- Fourth slide: BROADER CONTEXT — connect this concept to the broader climate picture with data.
+- Final slide (optional): SUMMARY — heading should state the key takeaway. Cite the primary sources used.`,
+    toneDirective: 'Academic but accessible. Clean, structured, no opinions — just clear explanation backed by data.',
     lastSlideCta: '',
   },
   {
     id: 'localized-impact',
-    name: 'The Country Spotlight',
+    name: 'The Country Data',
     goal: 'Shareability + saves',
     preferredStyles: ['editorial', 'clean'],
     slideRange: [4, 5],
     researchMethod: 'tavily',
-    researchDirective: `Find COUNTRY-SPECIFIC climate data for a Global South nation:
-1. The primary climate threat this country faces — flooding, drought, heatwaves, cyclones, desertification — with national data
-2. Scale of impact — millions affected, GDP losses, infrastructure damage, deaths
-3. The country's per-capita emissions compared to major Global North emitters
-4. Government reports, UN assessments, or World Bank data on this country's climate vulnerability`,
+    researchDirective: `Find COUNTRY-SPECIFIC climate data:
+1. The primary climate threat this country faces — flooding, drought, heatwaves, cyclones, desertification — with national measurements
+2. Scale of impact — population affected, GDP loss percentage, infrastructure damage costs, death toll
+3. The country's per-capita emissions compared to global average and top emitters
+4. Government reports, UN assessments, or World Bank data on this country's climate vulnerability index`,
     coverPrompt:
-      'Cover title must mention a SPECIFIC COUNTRY facing major climate impacts (e.g., "India\'s Water Crisis", "Pakistan\'s Flood Nightmare", "Brazil\'s Amazon Emergency", "Bangladesh: Drowning Nation", "Nigeria\'s Desert Advance"). Pick a Global South country currently experiencing severe climate consequences. Subtitle should name the specific threat.',
+      'Cover title must mention a SPECIFIC COUNTRY with a data point (e.g., "India: 40°C+ Days Tripled Since 2000", "Pakistan: $30 Billion in Flood Damage", "Bangladesh: 17% of Land Area at Risk", "Nigeria: 75% Desertification Rate in the North"). Subtitle should state the data source.',
     slidePrompt: `Create 4-5 slides (not counting the cover). Structure (COUNTRY-LEVEL — all data about ONE country):
-- First slide: THE THREAT — what climate danger this country faces. Use national-level data and government/UN reports.
-- Second slide: THE SCALE — how many millions are affected, GDP losses, infrastructure damage. Use country-wide numbers.
-- Third slide: THE CONTRAST — compare this country's emissions per capita to the Global North nations causing the crisis. Show the injustice.
-- Fourth slide: THE HUMAN STORIES — specific communities, regions, or populations within the country bearing the worst impact.
-- Final slide (optional): Heading should be "Tag Someone From [Country Name]." Body should summarize urgency and connect to global climate justice.`,
-    toneDirective: 'Country-specific, data-driven, globally conscious. Every stat should be national-level. Connect local suffering to global causes.',
-    lastSlideCta: 'Tag Someone From Here.',
+- First slide: THE PRIMARY THREAT — what climate data shows for this country. National measurements from government or UN reports.
+- Second slide: THE SCALE — population affected, GDP impact, infrastructure damage. Country-wide numbers.
+- Third slide: EMISSIONS CONTEXT — this country's per-capita emissions alongside global average and top emitters. Side-by-side comparison.
+- Fourth slide: REGIONAL BREAKDOWN — specific communities, states, or regions within the country with the most extreme data.
+- Final slide (optional): PROJECTIONS — what models forecast for this country by 2050.`,
+    toneDirective: 'Country-specific, data-dense, precise. Every stat should be national-level with clear sourcing. Present the numbers and let them define the picture.',
+    lastSlideCta: '',
   },
   {
     id: 'policy-breakdown',
@@ -207,109 +206,109 @@ Use as many slides as needed to tell the chronological story properly.`,
     researchMethod: 'tavily',
     researchDirective: `Find POLICY AND AGREEMENT data for analysis:
 1. The specific policy, agreement, or regulation related to this topic — original targets, commitments, deadlines
-2. Current progress data — where we actually stand vs what was promised
-3. Which countries or entities are falling short and by how much
-4. Expert analysis on whether current pace can meet the original goals`,
+2. Current progress data — where measurements actually stand vs what was committed
+3. The gap between targets and current trajectory — quantified in specific units
+4. Expert projections on whether current pace can meet the original goals, with probability estimates`,
     coverPrompt:
-      'Cover title must reference a specific POLICY, AGREEMENT, or REGULATION (e.g., "Paris Agreement: Are We On Track?", "EU Carbon Tax: What It Really Does", "COP30: What to Expect"). Subtitle should pose the key question.',
+      'Cover title must reference a specific POLICY, AGREEMENT, or REGULATION (e.g., "Paris Agreement: The Numbers So Far", "EU Carbon Tax: Measured Impact", "COP30: Target vs Reality"). Subtitle should state the key gap figure.',
     slidePrompt: `Create 3-4 slides (not counting the cover). Structure (ANALYTICAL):
-- First slide: THE GOAL — what the policy/agreement aims to achieve. Original targets, commitments, deadlines.
-- Second slide: CURRENT PROGRESS — where we actually stand. Data showing progress (or lack thereof).
-- Third slide: THE GAP — the difference between what was promised and what's happening. Who's falling short and why?
-- Final slide (optional): DISCUSSION QUESTION — heading should be a thought-provoking question (e.g., "Can We Still Make It?"). Body should present both sides.`,
-    toneDirective: 'Analytical, balanced, intelligent. Present facts without preaching. Let the data speak. This is for a thoughtful audience.',
+- First slide: THE TARGET — what the policy/agreement set as goals. Original numbers, commitments, deadlines.
+- Second slide: CURRENT DATA — where measurements actually stand. Data showing progress or shortfall.
+- Third slide: THE GAP — the quantified difference between target and trajectory. Which commitments are on track and which are not, with specific figures.
+- Final slide (optional): PROJECTIONS — what current data says about whether targets will be met, with probability ranges from scientific assessments.`,
+    toneDirective: 'Analytical, precise. Present targets alongside measured progress. The gap between commitment and data is the story.',
     lastSlideCta: '',
   },
   {
-    id: 'the-indictment',
-    name: 'The Indictment',
-    goal: 'Outrage + shares + comments',
+    id: 'the-record',
+    name: 'The Record',
+    goal: 'Data transparency + shares',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [4, 5],
     researchMethod: 'both',
-    researchDirective: `Find PROSECUTORIAL EVIDENCE for an accusation-style post:
-1. The single most responsible entity (corporation, executive, or institution) — name them explicitly
-2. When they KNEW about the damage — internal documents, leaked memos, early research they funded or suppressed
-3. How much they PROFITED during the period of knowingly causing damage — revenue, profit figures, executive compensation
-4. Legal actions: lawsuits filed, fines paid, settlements, court rulings
-5. Deaths, displacement, and economic damage directly attributable to their actions`,
+    researchDirective: `Find DOCUMENTED HISTORICAL DATA about a specific entity's climate record:
+1. The entity's measured emissions or environmental footprint over time — with specific figures and dates
+2. What internal research or early data they had access to — with dates and document references
+3. Revenue and production figures during the same period
+4. Legal proceedings, regulatory filings, or audit data — documented facts from court records or public filings
+5. Measured environmental and health outcomes in areas of their operations`,
     coverPrompt:
-      'Cover title must NAME a specific entity and accuse them directly (e.g., "ExxonMobil Knew Since 1977", "The 1% Are Killing You", "Your Bank Funds Your Destruction", "Modi/Trump/Politicians Won\'t Say This"). Subtitle should be a damning fact. Make it read like a courtroom verdict.',
-    slidePrompt: `Create 4-5 slides (not counting the cover). Structure (PROSECUTION — building a legal case):
-- First slide: THE CRIME — what they did, when they knew, and how much they profited. Name the entity explicitly. Use exact dollar amounts and dates.
-- Second slide: THE EVIDENCE — the smoking gun. Internal memos, leaked reports, court filings, data that proves intent.
-- Third slide: THE VICTIMS — who paid the price while they profited. Name countries, communities. Body count, displacement numbers, economic ruin.
-- Fourth slide (optional): THE COVER-UP — how they tried to hide it, suppress research, or fund denial.
-- Final slide: THE VERDICT — heading must be "Guilty." Body should be a 2-sentence summary. End with: "Share this before they bury it."`,
-    toneDirective: 'Prosecutorial, furious, factual. You are a prosecutor delivering a closing argument. Every sentence is an accusation backed by data. No hedging, no "may have" — they DID.',
-    lastSlideCta: 'Share this before they bury it.',
+      'Cover title must NAME a specific entity and state a documented fact (e.g., "ExxonMobil\'s Internal Climate Models: 1977-2023", "The Carbon Majors: 71% of Emissions Traced to 100 Entities", "BP\'s Carbon Footprint Campaign: The Data"). Subtitle should state a key figure from the record.',
+    slidePrompt: `Create 4-5 slides (not counting the cover). Structure (DOCUMENTED RECORD):
+- First slide: THE DATA — what the numbers show. Emissions figures, production volumes, revenue figures. Exact amounts and dates.
+- Second slide: THE INTERNAL DATA — what internal research showed, with document dates and findings. Cite specific studies or filings.
+- Third slide: THE MEASURED IMPACT — environmental and health data from affected areas. Measured outcomes with figures.
+- Fourth slide (optional): THE TRAJECTORY — how the numbers have changed over time. Current figures vs historical.
+- Final slide: THE FULL RECORD — a data summary. Present the key figures side by side.`,
+    toneDirective: 'Documentary, precise, archival. You are presenting a factual record. Dates, figures, sources. No commentary — the documented record is the content.',
+    lastSlideCta: '',
   },
   {
-    id: 'uncomfortable-truth',
-    name: 'The Uncomfortable Truth',
-    goal: 'Viral controversy + saves',
+    id: 'data-vs-narrative',
+    name: 'Data vs Common Belief',
+    goal: 'Engagement through surprise',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [3, 4],
     researchMethod: 'both',
-    researchDirective: `Find data that DEBUNKS a comfortable mainstream narrative:
-1. The mainstream narrative or "comfortable lie" most people believe about this topic
-2. The actual data that directly contradicts the mainstream narrative — the starker the contrast, the better
-3. Who benefits from maintaining the false narrative — follow the money to corporations, politicians, industries
-4. Evidence of deliberate misinformation campaigns or PR efforts to sustain the lie`,
+    researchDirective: `Find data that CONTRADICTS a widely held assumption:
+1. The common assumption most people hold about this topic — what is the default belief?
+2. The measured data that directly contradicts this — from peer-reviewed studies, government statistics, or scientific measurements
+3. The scale of the gap between what people believe and what the data shows
+4. Historical data showing how this gap between belief and measurement developed over time`,
     coverPrompt:
-      'Cover title must start with "Nobody Will Tell You This" or "The Truth About" or "What They Don\'t Want You To Know" (e.g., "Nobody Will Tell You This About Population", "The Truth About Your Carbon Footprint", "What They Don\'t Want You To Know About Recycling"). Subtitle should hint at the taboo truth.',
-    slidePrompt: `Create 3-4 slides (not counting the cover). Structure (TABOO-BREAKING):
-- First slide: THE LIE — the comfortable mainstream narrative everyone believes. Quote politicians, brands, or media. Show how soothing and false it is.
-- Second slide: THE REAL DATA — the actual numbers that demolish the lie. Make the contrast between narrative and reality STARK.
-- Third slide: WHY THEY LIE — follow the money. Who profits? Which corporations, politicians, or industries benefit? Name them.
-- Final slide (optional): WHAT NOW — heading must be "Now You Know." Body should be a gut-punch summary.`,
-    toneDirective: 'Whistle-blower energy. You know something dangerous and you\'re telling the world despite pressure not to. Calm fury. Every word is a reveal.',
-    lastSlideCta: 'Now You Know.',
+      'Cover title must present a common belief followed by a contradicting data point (e.g., "Recycling Handles 9% of Plastic. Not 50%.", "Your Carbon Footprint Was Invented by BP in 2004.", "Electric Cars: The Full Lifecycle Numbers"). Subtitle should cite the source.',
+    slidePrompt: `Create 3-4 slides (not counting the cover). Structure:
+- First slide: THE COMMON BELIEF — what most people assume, and the data point that contradicts it.
+- Second slide: THE FULL DATA — the measured reality in detail. Multiple data points that paint the complete picture.
+- Third slide: THE GAP — quantify the difference between assumption and reality. Show how large the misconception is.
+- Final slide (optional): CONTEXT — present the data that explains how and when the gap between belief and measurement developed.`,
+    toneDirective: 'Measured, surprising, precise. Present the assumption, then present the data. The contrast between the two is the entire point. No editorializing.',
+    lastSlideCta: '',
   },
   {
-    id: 'india-on-fire',
-    name: 'India On Fire',
+    id: 'india-data',
+    name: 'India Data',
     goal: 'Hyper-local relevance for Indian audience',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [4, 5],
     researchMethod: 'tavily',
     researchDirective: `Find INDIA-SPECIFIC climate data:
-1. The specific climate threat facing India RIGHT NOW — heatwaves, monsoon disruption, water scarcity, air pollution — with data from Indian cities, states, and rivers
-2. Who is most vulnerable — informal workers, small farmers, slum dwellers — with population numbers
-3. India's per-capita emissions compared to USA, EU, China, and Gulf states
-4. Indian government data, IPCC South Asia assessments, or UN reports on India's climate vulnerability`,
+1. The specific climate measurements for India — heatwave frequency, monsoon variability, water table levels, air quality indices — with data from Indian cities, states, and rivers
+2. Affected population data — number of people in vulnerable categories, with demographic breakdowns
+3. India's per-capita emissions alongside USA, EU, China, and Gulf states — exact figures
+4. Indian government data (IMD, CPCB, CWC), IPCC South Asia assessments, or UN/World Bank reports on India`,
     coverPrompt:
-      'Cover title must be INDIA-SPECIFIC and alarming (e.g., "Delhi Will Be Unlivable by 2040", "80 Crore Indians Can\'t Feed Themselves — Now Add Climate Change", "India\'s Rivers Are Dying", "Your City Is Running Out of Water", "55°C Is Coming to Your State"). Subtitle should name specific Indian states or cities at risk.',
+      'Cover title must be INDIA-SPECIFIC with a data point (e.g., "Delhi AQI Exceeded 400 on 182 Days in 2025", "India Lost 14% of Its Glacier Mass Since 2000", "40 Crore Indians Face Water Stress", "India: 55°C Recorded in Rajasthan"). Subtitle should cite the data source.',
     slidePrompt: `Create 4-5 slides (not counting the cover). Structure (ALL DATA MUST BE INDIA-SPECIFIC):
-- First slide: THE CRISIS IN INDIA — what is happening RIGHT NOW. Name Indian cities, states, rivers. Use Indian government data, IPCC data for South Asia, or UN data.
-- Second slide: WHO GETS HIT — India's most vulnerable populations. Use population numbers in crores.
-- Third slide: THE SCALE — economic damage, agricultural losses, health impacts with India-specific numbers.
-- Fourth slide: THE GLOBAL INJUSTICE — India's per-capita emissions vs the USA/EU. Show that India emits a fraction but suffers disproportionately.
-- Final slide (optional): THE QUESTION — heading should directly challenge Indian readers (e.g., "Will You Stay Silent?"). Body should make climate personal for every Indian.`,
-    toneDirective: 'Urgent, patriotic rage. You love India and you\'re watching it burn while its people are kept distracted by cricket and elections. Speak like someone shaking a sleeping person awake.',
+- First slide: CURRENT MEASUREMENTS — what instruments and monitoring show RIGHT NOW. Name Indian cities, states, rivers. Use IMD, CPCB, IPCC, or UN data.
+- Second slide: AFFECTED POPULATION — demographic and geographic breakdown. Use population figures in crores.
+- Third slide: ECONOMIC AND AGRICULTURAL DATA — measured losses, yield changes, infrastructure costs with India-specific numbers.
+- Fourth slide: EMISSIONS COMPARISON — India's per-capita emissions alongside global averages and top emitters. Present the numbers side by side.
+- Final slide (optional): PROJECTIONS — what climate models project for India by 2050. State the model and its assumptions.`,
+    toneDirective: 'India-focused, data-dense, precise. Every stat must be India-specific with clear sourcing. Present measurements, comparisons, and projections. The numbers define the story.',
     lastSlideCta: '',
   },
   {
-    id: 'system-vs-you',
-    name: 'The System vs You',
-    goal: 'Class consciousness + viral shares',
+    id: 'scale-comparison',
+    name: 'The Scale Comparison',
+    goal: 'Engagement through stark data contrasts',
     preferredStyles: ['noir', 'editorial'],
     slideRange: [3, 4],
     researchMethod: 'both',
-    researchDirective: `Find data showing the CONTRAST between corporate and individual responsibility:
-1. The share of global emissions from corporate/industrial decisions vs individual consumer choices — with specific percentages
-2. Specific corporate carbon footprints compared to what individuals are told to reduce
-3. The history of how "personal carbon footprint" was created as a PR concept — by which company and when
-4. What percentage of emission reduction is achievable through individual behavior change vs systemic policy`,
+    researchDirective: `Find data showing SCALE CONTRASTS in emissions and climate impact:
+1. Emissions data broken down by source — industrial, transport, agriculture, residential — with exact percentages
+2. Per-capita data across income levels and nations — top 1% vs median vs bottom 50%
+3. Historical cumulative emissions by nation or entity — total contributions over time
+4. The measured gap between what individual behavior change can affect vs what systemic and industrial changes affect — with specific percentages`,
     coverPrompt:
-      'Cover title must contrast what the SYSTEM does vs what YOU are told to do (e.g., "They Fly Private. You\'re Told to Recycle.", "They Burn the Planet. You\'re Told to Use Metal Straws.", "30 Companies Cause 71% of Emissions. You\'re Blamed for Not Composting."). Make the hypocrisy the title.',
-    slidePrompt: `Create 3-4 slides (not counting the cover). Structure (EXPOSE THE HYPOCRISY):
-- First slide: WHAT YOU'RE TOLD — the mainstream narrative that blames individuals. List the things regular people are shamed for.
-- Second slide: WHAT THEY DO — the reality of corporate and billionaire behavior. Use specific names, numbers, carbon footprints.
-- Third slide: THE MATH — show that individual action changes less than 5-10% of emissions. The rest comes from corporate and systemic decisions. Prove individual guilt is manufactured.
-- Final slide (optional): THE REAL FIGHT — heading must be "Stop Blaming Yourself." Redirect anger toward the real culprits.`,
-    toneDirective: 'Righteous anger on behalf of ordinary people. You are defending the common person against a system designed to exploit and blame them. Class-conscious, anti-corporate, empowering.',
-    lastSlideCta: 'Stop Blaming Yourself.',
+      'Cover title must present a SCALE CONTRAST using data (e.g., "Top 1% Emit 100x the Bottom 50%", "Industrial Emissions: 73%. Household Choices: 4%.", "100 Entities. 71% of Emissions."). Subtitle should cite the data source.',
+    slidePrompt: `Create 3-4 slides (not counting the cover). Structure:
+- First slide: THE BREAKDOWN — emissions by source category with exact percentages. Show where the largest measured shares come from.
+- Second slide: THE PER-CAPITA DATA — emissions across income groups and nations. Present the measured ratios.
+- Third slide: THE SCALE — put individual action data alongside industrial and systemic data. Show the measured proportions.
+- Final slide (optional): HISTORICAL CUMULATIVE — total emissions by entity or nation over time. The full ledger.`,
+    toneDirective: 'Data-comparative, precise. Present measured proportions and let the scale speak. No editorial framing — the ratios are the content.',
+    lastSlideCta: '',
   },
   {
     id: 'philosophical',
@@ -319,24 +318,24 @@ Use as many slides as needed to tell the chronological story properly.`,
     slideRange: [4, 6],
     researchMethod: 'both',
     preferredTopicCategories: ['philosophical', 'population-consumption'],
-    researchDirective: `Find data that exposes humanity's FUNDAMENTAL GREED — the lust to consume more, produce more, and multiply endlessly:
-1. The scale of human overshoot — Earth Overshoot Day, how many planets we'd need, resource extraction vs regeneration rates, total waste generated
-2. Population as a multiplier — total humans alive now vs any point in history, projections to 10 billion+, how every new billion accelerates extraction, emissions, habitat destruction, and species extinction
-3. The consumption machine — per-capita consumption growth, advertising spend that fuels desire, planned obsolescence, how GDP ideology treats "more" as sacred
-4. The psychological disease — hedonic adaptation research, why humans are never satisfied, status competition, the gap between material wealth and happiness
-5. The ecological price — species extinction rates caused by human expansion, habitat destroyed for agriculture and cities, forests cleared, oceans emptied, carbon emitted — the direct cost of human greed`,
+    researchDirective: `Find data on humanity's aggregate impact on planetary systems:
+1. The scale of human resource use — Earth Overshoot Day, ecological footprint vs biocapacity, total resource extraction rates, waste generation figures
+2. Population and impact data — total humans alive now, growth rate, projections to 10 billion+, per-billion resource extraction and emissions increases
+3. Consumption data — per-capita consumption trends, global GDP growth vs resource depletion, material throughput of the global economy
+4. Psychological research data — measured hedonic adaptation, satisfaction indices vs consumption levels, material wealth vs reported wellbeing
+5. Ecological measurements — species extinction rate vs background rate, habitat loss figures, deforestation rates, ocean biomass decline, atmospheric CO2 concentration trajectory`,
     coverPrompt:
-      'Cover title must be a DARK PHILOSOPHICAL QUESTION about human nature itself — questioning why we can never stop wanting more (e.g., "Why Can\'t We Stop?", "Are Humans a Plague?", "What If We Are the Extinction Event?", "8 Billion Appetites. One Planet.", "The Species That Ate Its Own Home"). Subtitle should add a devastating data point. This must feel like an uncomfortable truth about what we are.',
-    slidePrompt: `Create 4-6 slides (not counting the cover). Structure (PHILOSOPHICAL — questioning human nature itself):
-- First slide: THE APPETITE — humans take more than they need. Always have, always will. Use data on how much we extract vs what the planet can regenerate. Earth Overshoot Day. Resource extraction rates. The sheer volume of what 8 billion humans consume, discard, and destroy every single day.
-- Second slide: THE MULTIPLICATION — more people means more destruction. Period. Show the population curve from 1 billion to 8 billion. Each billion arrived faster. Every new billion means more land cleared, more species killed, more carbon dumped. Population is not neutral — it is a direct multiplier of ecological damage.
-- Third slide: THE LUST — why do we want more? Question the fundamental human drive. Hedonic treadmill — we buy, feel nothing, buy again. Status competition — we consume to signal worth. Advertising spends hundreds of billions to manufacture desire we never naturally had. We are not consuming to live. We are living to consume.
-- Fourth slide: THE WRECKAGE — translate human greed into numbers. Species gone. Forests erased. Oceans acidified. Ice melted. All so one species could have more than it needs and still feel empty.
-- Fifth slide (optional): THE QUESTION NOBODY ASKS — if more people and more consumption have only accelerated destruction, why does every government, religion, and economic system still worship growth? Why is "have more children, buy more things, grow the economy" still the default? Who benefits from this?
-- Final slide: THE MIRROR — heading should be brutally personal (e.g., "What Are You Really Hungry For?", "Will You Ever Have Enough?", "How Much Is Enough?"). No comforting answers. Just the question, sitting with the reader.
+      'Cover title must be a QUESTION about the data on human impact (e.g., "8 Billion People. 1.75 Planets of Resources.", "Can a Growing Species Shrink Its Footprint?", "Consumption Grows 3% Per Year. The Planet Doesn\'t.", "The Species With No Off Switch"). Subtitle should add a specific data point.',
+    slidePrompt: `Create 4-6 slides (not counting the cover). Structure (DATA-DRIVEN reflection on aggregate human impact):
+- First slide: RESOURCE DATA — what humans extract vs what the planet regenerates. Earth Overshoot Day. Extraction rates. The measured gap between consumption and regeneration.
+- Second slide: POPULATION TRAJECTORY — the growth curve with data points. Each billion milestone and the corresponding measured increase in emissions, land use, and resource extraction.
+- Third slide: CONSUMPTION DATA — per-capita consumption trends. GDP growth alongside resource depletion rates. The measured relationship between economic output and ecological cost.
+- Fourth slide: ECOLOGICAL COST — measured species extinction rates, habitat loss, ocean biomass decline, atmospheric CO2 concentration. The quantified ecological price of current human activity.
+- Fifth slide (optional): THE GROWTH QUESTION — present data on whether economic growth has ever been decoupled from resource use at global scale. What the measurements show.
+- Final slide: THE DATA SUMMARY — heading should be a question (e.g., "What Do These Numbers Add Up To?"). Present the key figures. No answers — just the data, sitting with the reader.
 
-CRITICAL TONE: This is quiet devastation, not shouting. Write like a philosopher who has seen too much. Use "we" — this is about the human species, not "them." Every slide should make the reader feel the weight of being part of a species that cannot stop.`,
-    toneDirective: 'Dark philosophical. Quietly devastating. You are questioning the nature of the human species itself — our bottomless hunger for more people, more things, more growth on a finite planet. No rage, no shouting — just the cold clarity of someone who sees what we are and cannot look away. Use "we" throughout. Every sentence should land like a stone dropped into still water.',
+TONE: This is quiet, data-heavy reflection. Use "we" — this is about the human species in aggregate. Every slide should present measured facts that raise uncomfortable questions on their own.`,
+    toneDirective: 'Philosophical but data-anchored. Quietly precise. You are presenting the measured aggregate impact of the human species — not with rage, but with the cold clarity of data that speaks for itself. Use "we" throughout. Every sentence contains a number.',
     lastSlideCta: '',
   },
   {
@@ -348,31 +347,31 @@ CRITICAL TONE: This is quiet devastation, not shouting. Write like a philosopher
     researchMethod: 'tavily',
     researchDirective: `Find the LATEST DATA about this specific event:
 1. Exact measurements — temperatures, rainfall amounts, wind speeds, area affected, death toll, displacement numbers
-2. How this event compares to historical records — is it the worst ever? Top 5? How does it compare to the same event last year?
-3. Scientific attribution — has any rapid attribution study linked this to climate change? What do climate scientists say?
-4. Human impact — how many people affected, infrastructure damage in dollars, agricultural losses
-5. Any government or international response so far`,
+2. How this event compares to historical records — is it the worst measured? Top 5? How does it compare to the same event last year?
+3. Scientific attribution data — has any rapid attribution study quantified the climate change contribution? What probability or intensity increase was calculated?
+4. Human impact data — population affected, infrastructure damage costs, agricultural losses
+5. Government or international response data — aid figures, emergency declarations`,
     coverPrompt:
-      'Cover title must be URGENT and NEWS-LIKE — state what just happened with specifics (e.g., "Antarctic Ice Sheet Lost 1 Trillion Tons This Month", "India Hits 52°C — Hottest Day Ever Recorded", "Category 5 Cyclone Devastates Pacific Islands"). Subtitle should add a shocking data point. This must feel like BREAKING NEWS.',
-    slidePrompt: `Create 3-5 slides (not counting the cover). Structure (BREAKING NEWS — react to a current event):
-- First slide: WHAT HAPPENED — the event in detail. Exact numbers, location, date. Make it feel immediate and urgent.
-- Second slide: THE CONTEXT — how this compares to historical records. Is this unprecedented? Show the trend.
-- Third slide: THE CLIMATE CONNECTION — scientific attribution. How climate change made this event more likely or severe.
-- Fourth slide (optional): THE HUMAN COST — people affected, displacement, economic damage. Name specific communities.
-- Final slide: WHY THIS MATTERS — heading should be "This Is Climate Change. Right Now." Connect the event to the bigger picture.`,
-    toneDirective: 'Breaking news urgency. You are reporting from the front lines. Present tense where possible. Every sentence should convey immediacy — this is happening NOW.',
-    lastSlideCta: 'This Is Climate Change. Right Now.',
+      'Cover title must state what happened with a specific measurement (e.g., "Antarctic Ice Sheet Lost 1 Trillion Tons This Month", "India Recorded 52.3°C — Highest Temperature in National History", "Category 5 Cyclone: 280 km/h Winds Hit Pacific Islands"). Subtitle should add a key data point.',
+    slidePrompt: `Create 3-5 slides (not counting the cover). Structure:
+- First slide: THE MEASUREMENTS — the event in exact figures. Location, date, recorded values. Present the raw data.
+- Second slide: HISTORICAL COMPARISON — how this measurement compares to the historical record. Show the trend data.
+- Third slide: ATTRIBUTION DATA — scientific attribution studies. The calculated probability increase or intensity change due to climate change.
+- Fourth slide (optional): IMPACT DATA — population affected, displacement figures, economic damage. Measured costs.
+- Final slide: TREND CONTEXT — where this event sits in the broader measured trend. Present the trajectory data.`,
+    toneDirective: 'Reporting, precise, immediate. Present tense where possible. State what was measured, when, and how it compares. The data conveys the urgency.',
+    lastSlideCta: '',
   },
 ];
 
 const WEEKDAY_SCHEDULE: [string, string, string, string][] = [
-  ['brutal-stat', 'uncomfortable-truth', 'localized-impact', 'the-indictment'],     // Sunday
-  ['the-indictment', 'explainer-stack', 'myth-vs-reality', 'if-nothing-changes'],   // Monday
-  ['india-on-fire', 'system-vs-you', 'policy-breakdown', 'brutal-stat'],            // Tuesday
-  ['inequality-contrast', 'timeline', 'philosophical', 'myth-vs-reality'],          // Wednesday (1 philosophical per week)
-  ['this-affects-you', 'localized-impact', 'system-vs-you', 'explainer-stack'],     // Thursday
-  ['explainer-stack', 'brutal-stat', 'the-indictment', 'india-on-fire'],            // Friday
-  ['myth-vs-reality', 'if-nothing-changes', 'inequality-contrast', 'timeline'],     // Saturday
+  ['brutal-stat', 'data-vs-narrative', 'localized-impact', 'the-record'],            // Sunday
+  ['the-record', 'explainer-stack', 'myth-vs-reality', 'if-nothing-changes'],        // Monday
+  ['india-data', 'scale-comparison', 'policy-breakdown', 'brutal-stat'],             // Tuesday
+  ['inequality-contrast', 'timeline', 'philosophical', 'myth-vs-reality'],           // Wednesday
+  ['this-affects-you', 'localized-impact', 'scale-comparison', 'explainer-stack'],   // Thursday
+  ['explainer-stack', 'brutal-stat', 'the-record', 'india-data'],                   // Friday
+  ['myth-vs-reality', 'if-nothing-changes', 'inequality-contrast', 'timeline'],      // Saturday
 ];
 
 export function pickArchetype(slotIndex = 0): ContentArchetype {

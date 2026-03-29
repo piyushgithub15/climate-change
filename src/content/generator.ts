@@ -71,22 +71,20 @@ export interface GeneratedContent {
 }
 
 const HASHTAG_POOL = [
-  '#ClimateCrisis', '#ClimateEmergency', '#ClimateCollapse', '#ClimateBreakdown',
-  '#ClimateJustice', '#ClimateTruth', '#ClimateReality', '#ClimateFacts',
-  '#SystemChange', '#SystemicFailure', '#CorporateGreed', '#CorporateAccountability',
-  '#BigOilLies', '#FossilFuelCrimes', '#EndFossilFuels', '#FossilFuelLobby',
-  '#PollutionKills', '#Greenwashing', '#GreenwashingExposed', '#NetZeroScam',
-  '#PlanetOverProfit', '#PeopleOverProfit', '#WakeUp', '#OpenYourEyes',
-  '#ClimateAction', '#ClimateActivism', '#Degrowth', '#Overconsumption',
-  '#EatTheRich', '#TaxTheRich', '#BillionaireHypocrisy', '#WealthInequality',
+  '#ClimateFacts', '#ClimateData', '#ClimateScience', '#ClimateReality',
+  '#ClimateCrisis', '#ClimateChange', '#GlobalWarming', '#ClimateResearch',
+  '#DataDriven', '#TheNumbersDontLie', '#FactsOnly', '#HardData',
+  '#CarbonEmissions', '#GreenhouseGas', '#CO2Levels', '#MethaneEmissions',
+  '#FossilFuels', '#EnergyTransition', '#RenewableEnergy', '#NetZero',
+  '#ArcticIce', '#SeaLevelRise', '#Permafrost', '#TippingPoints',
   '#MassExtinction', '#SixthExtinction', '#BiodiversityLoss', '#EcosystemCollapse',
-  '#WaterCrisis', '#FoodCrisis', '#HungerCrisis', '#ClimateRefugees',
-  '#EnvironmentalRacism', '#EnvironmentalJustice', '#IndiaClimateCrisis',
-  '#HimalayanMeltdown', '#MonsoonCrisis', '#Deforestation', '#SaveForests',
-  '#AirPollution', '#ToxicAir', '#Microplastics', '#OceanDeath',
-  '#HeatWave', '#ExtremeWeather', '#ClimateDisaster', '#Tipping',
-  '#ParisAgreementFailed', '#COPFailure', '#ClimateScam', '#WakeUpIndia',
-  '#PopulationCrisis', '#Overpopulation', '#ConsumptionCrisis', '#BoilingPoint',
+  '#WaterScarcity', '#FoodSecurity', '#Desertification', '#SoilDegradation',
+  '#AirQuality', '#Pollution', '#Microplastics', '#OceanAcidification',
+  '#HeatWave', '#ExtremeWeather', '#Flooding', '#Drought',
+  '#Deforestation', '#LandUse', '#UrbanHeat', '#Glaciers',
+  '#IPCC', '#ParisAgreement', '#COP', '#ClimatePolicy',
+  '#PopulationGrowth', '#ResourceDepletion', '#Overconsumption', '#EarthOvershoot',
+  '#IndiaClimate', '#SouthAsia', '#GlobalSouth', '#ClimateVulnerability',
 ];
 
 function pickRandomHashtags(count: number = 10): string {
@@ -117,16 +115,16 @@ export async function generateContent(
     ? `\nTONE: ${archetype.toneDirective}`
     : '\nYour tone is direct, factual, and educational — like a mini documentary in slides.';
 
-  const systemPrompt = `You are a data-driven climate journalist. Your carousels are fact-heavy, number-dense, and evidence-based — like investigative reports compressed into Instagram slides. Every slide must teach the reader something concrete they didn't know before, backed by hard data.
+  const systemPrompt = `You are a climate data analyst. Your carousels are fact-heavy, number-dense, and evidence-based — raw data compressed into Instagram slides. Every slide must teach the reader something concrete they didn't know before, backed by hard data. You do NOT blame, accuse, moralize, or point fingers. You present facts. The brutality is in the numbers themselves.
 
 EDITORIAL PRINCIPLES:
 - LEAD WITH DATA — every slide opens with a specific number, percentage, dollar amount, or measurable claim. No slide should start with a generic statement.
-- NAME THE GUILTY — but ONLY if the research facts mention specific corporations, people, or entities.
-- FOLLOW THE MONEY — expose profiteers using data from the research facts.
-- SHOW CAUSE AND EFFECT — connect facts to consequences with specific numbers on both sides.
-- GLOBAL AUDIENCE WITH LOCAL DEPTH — use whatever geography the research facts support.
+- FACTS ONLY — present what happened, what is measured, what the data shows. No accusations, no guilt-tripping, no finger-pointing. The data is brutal enough on its own.
+- CAUSE AND EFFECT — connect facts to consequences with specific numbers on both sides. State what caused what, backed by data. Do not editorialize about who is "guilty."
+- SCALE AND CONTEXT — make numbers meaningful through comparisons, per-capita figures, historical baselines, and projections.
+- GLOBAL SCOPE — use whatever geography the research facts support.
 
-STRICT DATA RULE: Use ONLY the VERIFIED RESEARCH FACTS provided below. Every number, stat, company name, and comparison MUST come from the provided facts. Do NOT use your own knowledge for data. If a fact isn't in the research, don't use it.
+STRICT DATA RULE: Use ONLY the VERIFIED RESEARCH FACTS provided below. Every number, stat, entity name, and comparison MUST come from the provided facts. Do NOT use your own knowledge for data. If a fact isn't in the research, don't use it.
 ${toneDirective}
 
 WRITING QUALITY — THIS IS NON-NEGOTIABLE:
@@ -135,16 +133,18 @@ WRITING QUALITY — THIS IS NON-NEGOTIABLE:
 
 2. DATA DENSITY over commentary. Pack each slide with facts. A great slide has 3-4 different data points woven into a tight narrative. Don't waste sentences on opinions, rhetorical questions, or moralizing — let the numbers speak.
 
-3. SPECIFIC CONSEQUENCES — every slide must end with a concrete, quantified consequence from the research. Not "this causes problems" but "this killed 1,200 people in Karachi in 2023."
+3. QUANTIFIED CONSEQUENCES — every slide must end with a concrete, quantified consequence from the research. Not "this causes problems" but "this resulted in 1,200 deaths in Karachi in 2023."
 
-4. LOGICAL FLOW — slides must build on each other. Each slide adds a new dimension of evidence. The carousel should feel like layers of proof stacking up.
+4. LOGICAL FLOW — slides must build on each other. Each slide adds a new dimension of evidence. The carousel should feel like layers of data stacking up.
 
 BANNED PHRASES (instant quality failure):
-"health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices", "devastating consequences", "alarming rate", "wake-up call", "raises serious concerns", "it remains to be seen", "only time will tell", "food for thought", "let that sink in", "read that again", "pause and think".
+"health issues", "long-term impacts", "disrupted education", "poor conditions", "environmental damage", "negative effects", "worsening situation", "sacrificing their future", "we need to act", "time is running out", "think about future generations", "make sustainable choices", "devastating consequences", "alarming rate", "wake-up call", "raises serious concerns", "it remains to be seen", "only time will tell", "food for thought", "let that sink in", "read that again", "pause and think", "the guilty", "blood on their hands", "crimes against", "they don't want you to know", "make them answer", "name and shame", "hold them accountable", "corporate greed", "billionaire hypocrisy", "eat the rich", "the system is rigged", "wake up".
 
 5. Use EXACT NUMBERS from the research facts. Never "many people" — always the specific figure.
 
-6. NEVER recycle generic stats. Every statistic must come from the VERIFIED RESEARCH FACTS and must be relevant to the specific topic.`;
+6. NEVER recycle generic stats. Every statistic must come from the VERIFIED RESEARCH FACTS and must be relevant to the specific topic.
+
+7. NO BLAME, NO MORALIZING. State facts. State consequences. State scale. That is all. The reader draws their own conclusions.`;
 
   const highConfidence = facts.filter(f => f.confidence >= 7);
   const medConfidence = facts.filter(f => f.confidence >= 4 && f.confidence < 7);

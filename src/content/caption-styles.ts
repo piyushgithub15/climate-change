@@ -7,213 +7,182 @@ export interface CaptionStyle {
 
 export const CAPTION_STYLES: CaptionStyle[] = [
   {
-    id: 'debate-trigger',
-    name: 'The Debate Trigger',
-    purpose: 'Spark comments and grow through conversation',
-    prompt: `Write a DEBATE TRIGGER caption. Structure:
-1. Bold opening line — a provocative, confrontational statement (1 sentence).
-2. Short context — 1-2 sentences adding data or framing the tension.
-3. Direct question — pose a clear either/or or open question that forces people to pick a side.
-4. End with a line like "I want your honest take." or "Drop your answer below." or "Tell me what you think."
+    id: 'data-question',
+    name: 'The Data Question',
+    purpose: 'Spark comments through data-driven questions',
+    prompt: `Write a DATA QUESTION caption. Structure:
+1. Opening line — state the most striking data point from the post (1 sentence).
+2. Context — 1-2 sentences adding a second data point or comparison that creates tension.
+3. Direct question — pose a clear question that the data raises naturally.
 
-Keep it 4-6 lines total. Tone: direct, slightly confrontational, inviting disagreement.
+Keep it 4-6 lines total. Tone: direct, curious, data-grounded. The question should emerge from the numbers, not from opinion.
 
 Example structure:
-"100 companies are responsible for 71% of global emissions.
-Yet the conversation keeps landing on individual choices.
+"The top 10% of earners produce 50% of global emissions.
+The bottom 50% produce 12%.
 
-Should we be recycling harder — or holding boardrooms accountable?
+Per-capita emissions in Qatar are 70x higher than in Malawi.
 
-I want your honest take."`,
+What does equitable mean in a system shaped like this?"`,
   },
   {
     id: 'you-framing',
     name: 'The "You" Framing',
-    purpose: 'Increase relatability and personal connection',
+    purpose: 'Increase relatability through personal data',
     prompt: `Write a "YOU" FRAMING caption. Structure:
-1. Personal impact — list 2-3 ways this directly affects the reader's daily life (use "your/you").
-2. Clear implication — 1 sentence connecting it to climate change as the cause.
-3. Reflective question — end with a personal question the reader can answer from their own experience.
+1. Personal data — list 2-3 measured impacts that affect the reader's daily life (use "your/you") with specific figures.
+2. Causal link — 1 sentence connecting it to a measured climate trend.
+3. Reflective question — end with a question the reader can answer from their own experience.
 
-Keep it 4-6 lines total. Use second person throughout. Make it feel like their problem, not an abstract issue.
+Keep it 4-6 lines total. Use second person throughout. Every line must contain a number.
 
 Example structure:
 "Your grocery bill is up 23% in three years.
-Your insurance premiums are climbing.
-Your summers are getting longer and more dangerous.
+Your city recorded 47 days above 40°C last year.
+Your insurance premiums rose 18% since 2020.
 
-Climate change isn't a future problem — it's already in your budget.
+Global average temperature is 1.3°C above pre-industrial baseline.
 
-Have you noticed it where you live?"`,
+What does 2°C look like in your budget?"`,
   },
   {
     id: 'save-optimized',
     name: 'The Save-Optimized',
-    purpose: 'Drive saves — powerful in educational niches',
+    purpose: 'Drive saves through reference-worthy data',
     prompt: `Write a SAVE-OPTIMIZED caption. Structure:
-1. Summary — 1-2 sentences highlighting the most important data from the post.
-2. Future value — explain why this information will matter later (upcoming policy changes, worsening trends, rebranding cycles).
-3. Explicit save cue — end with a direct line telling people to save/bookmark this post.
+1. Summary — 1-2 sentences stating the most important data points from the post.
+2. Future relevance — explain why these numbers will be worth comparing to future data.
+3. Save prompt — end with a line suggesting the reader bookmark this as a data reference.
 
-Keep it 3-5 lines total. Tone: informative, urgent, practical. Make the reader feel they'll need this data again.
+Keep it 3-5 lines total. Tone: informative, precise, practical. Make the reader feel this data will be useful to revisit.
 
 Example structure:
-"5 fossil fuel companies made $200 billion in profit last year.
-Their combined climate pledges cover less than 12% of their emissions.
+"As of 2025, atmospheric CO2 is at 427 ppm. Pre-industrial was 280 ppm.
+The last time it was this high was 4.3 million years ago.
 
-These numbers will age badly for them. Keep this for when they rebrand again."`,
+These numbers will keep climbing. Worth having the baseline."`,
   },
   {
-    id: 'opinion-authority',
-    name: 'The Opinion Authority',
-    purpose: 'Build brand positioning and credibility',
-    prompt: `Write an OPINION AUTHORITY caption. Structure:
-1. Clear stance — state a position confidently in 1-2 sentences. Challenge a common assumption.
-2. Justification — 1-2 sentences backing it with data or logic. Reference "the data shows" or "the numbers don't support."
-3. Closing line — calm, firm, final. No question. Just a statement that lands.
+    id: 'data-authority',
+    name: 'The Data Authority',
+    purpose: 'Build credibility through precision',
+    prompt: `Write a DATA AUTHORITY caption. Structure:
+1. Clear statement — state what the data shows in 1-2 precise sentences.
+2. Supporting evidence — 1-2 sentences with additional data points or source references.
+3. Closing statement — a calm, factual closing line that summarizes the data's implication.
 
-Keep it 4-6 lines total. Tone: confident, calm, slightly contrarian. Not angry — authoritative. You're stating facts others won't.
+Keep it 4-6 lines total. Tone: confident, precise, authoritative. Not opinionated — just clear about what the numbers say.
 
 Example structure:
-"Net-zero pledges without enforceable timelines aren't commitments.
-They're press releases.
+"Net-zero pledges cover 91% of global GDP.
+Implemented policies cover 17% of the reduction needed.
 
-The data shows most corporate climate targets are structurally designed to fail.
+The gap between commitment and measurement is 74 percentage points.
 
-Calling it ambition doesn't make it real."`,
+That is the current state of global climate policy."`,
   },
   {
     id: 'future-projection',
     name: 'The Future Projection',
-    purpose: 'Increase engagement through speculation and urgency',
+    purpose: 'Engagement through data-based projections',
     prompt: `Write a FUTURE PROJECTION caption. Structure:
-1. Scenario framing — start with "If" or "At this pace" followed by a current trend and its trajectory.
-2. Conditional logic — 1-2 sentences projecting consequences with specific numbers and dates (2030, 2040, 2050).
-3. Open-ended question — end with a question about which direction things are heading (reform vs resistance, change vs collapse, stability vs scarcity).
+1. Current trajectory — start with a measured trend and its current rate.
+2. Projection — 1-2 sentences stating what models project at specific dates (2030, 2040, 2050) with figures.
+3. Open question — end with a question about the trajectory, grounded in the data.
 
-Keep it 4-6 lines total. Tone: analytical, forward-looking, creating urgency without panic.
+Keep it 4-6 lines total. Tone: analytical, forward-looking. Let the projected numbers create the urgency.
 
 Example structure:
-"If fossil fuel expansion continues at this pace, the burden won't be shared equally.
+"Sea level rose 3.7mm per year from 2006-2018. The rate is accelerating.
 
-By 2050, 1.2 billion people could be displaced.
+At current trajectory, IPCC projects 0.3-1.0m rise by 2100.
 
-Are we heading toward a managed transition — or a managed collapse?"`,
+That range covers everything from manageable to catastrophic. Which end of the range are we tracking toward?"`,
   },
   {
     id: 'minimal',
     name: 'The Minimal',
-    purpose: 'Stop the scroll — clean, direct, provokes curiosity',
+    purpose: 'Stop the scroll with raw data',
     prompt: `Write a MINIMAL caption. Rules:
 - Maximum 2-3 SHORT lines. Each line should be its own paragraph.
-- No questions, no calls to action, no explanation.
-- Just state the most powerful fact or contrast from the post in the fewest possible words.
-- The brevity itself should provoke curiosity and force people to look at the slides.
+- No questions, no calls to action, no commentary.
+- Just state the most powerful data point or contrast from the post.
+- The brevity and the numbers should force people to look at the slides.
 
-Keep it under 20 words total. Tone: stark, clean, haunting.
+Keep it under 20 words total. Tone: stark, clean, precise.
 
 Example structures:
 "71% of emissions.
-100 companies.
-
-That's it. That's the post."
-
-Or:
-
-"They knew.
-They profited anyway.
-
-And they still are."
+100 entities.
+Since 1988."
 
 Or:
 
-"The gap is widening.
-The clock is ticking.
-The boardrooms are silent."`,
+"427 ppm.
+Pre-industrial: 280 ppm.
++53% and climbing."
+
+Or:
+
+"1.3°C above baseline.
+Hottest year on record.
+Every year since 2015."`,
   },
   {
-    id: 'rage-fuel',
-    name: 'The Rage Fuel',
-    purpose: 'Maximum outrage — drives shares and angry comments',
-    prompt: `Write a RAGE FUEL caption. Structure:
-1. Open with the most infuriating contrast or fact — something that makes people's blood boil (1 sentence).
-2. Follow up with WHO is responsible — name a corporation, billionaire, or system (1-2 sentences).
-3. Then flip it — what YOU are told to do instead (recycle, use metal straws, save water) while they destroy everything.
-4. End with a furious line that demands sharing. Something like "If this doesn't make you angry, you're not paying attention." or "Share this. Tag them. Make them answer."
+    id: 'contrast-data',
+    name: 'The Contrast',
+    purpose: 'Engagement through stark numerical contrasts',
+    prompt: `Write a CONTRAST DATA caption. Structure:
+1. Open with the starkest data contrast from the post — two numbers side by side (1-2 sentences).
+2. Add one more data point that deepens the contrast (1 sentence).
+3. End with the comparison ratio or percentage gap — just the math.
 
-Keep it 5-7 lines total. Tone: FURIOUS, righteous anger, class-conscious. You're speaking for the 99% against the 1%.
+Keep it 4-5 lines total. Tone: measured, precise. Present two sets of numbers and let the gap between them be the entire message.
 
 Example structure:
-"A single billionaire's jet burns more fuel in one weekend than your entire lifetime of car travel.
+"Average American: 14.7 tonnes CO2 per year.
+Average Indian: 1.9 tonnes CO2 per year.
 
-But YOU were told to carpool.
+The US has 4.2% of the world's population and 13.5% of cumulative emissions.
 
-30 companies produce 71% of global emissions.
-But YOU were told to carry a cloth bag.
-
-Stop feeling guilty. Start feeling angry.
-
-Share this. Tag them. Make them answer."`,
+7.7x the per-capita footprint. 3.2x the cumulative share."`,
   },
   {
-    id: 'wake-up-call',
-    name: 'The Wake-Up Call',
-    purpose: 'Shake passive followers into action — urgency + alarm',
-    prompt: `Write a WAKE-UP CALL caption. Structure:
-1. Open with a SHOCKING fact the reader probably doesn't know (1 sentence).
-2. Explain why NO ONE is talking about this — media blackout, corporate suppression, political convenience (1-2 sentences).
-3. Make it PERSONAL — how this will hit the reader's life, family, city, or country within years, not decades (1-2 sentences).
-4. End with a line that makes NOT sharing feel like complicity. Something like "Every person who sees this and does nothing is part of the problem." or "Your silence is their shield."
+    id: 'india-data',
+    name: 'The India Data',
+    purpose: 'Hyper-targeted for Indian audience with India-specific data',
+    prompt: `Write an INDIA DATA caption. Structure:
+1. Open with an India-specific measurement — name Indian cities, states, or monitoring data (1 sentence). Use crores for population figures.
+2. Add comparative data — India's figures alongside global averages or other nations (1-2 sentences).
+3. End with the key India-specific projection or trend figure.
 
-Keep it 5-7 lines total. Tone: alarm, disbelief, like you just found out something horrifying and you're telling your closest friend.
-
-Example structure:
-"100 to 1,000 species go extinct every single day.
-
-Not a single TV channel in India spent a minute covering this today. Not one.
-
-By the time your child is 30, they'll live in a world with half the species you grew up with.
-
-Your silence is their shield. Share this."`,
-  },
-  {
-    id: 'india-direct',
-    name: 'The India Direct',
-    purpose: 'Hyper-targeted for Indian audience — drives comments and saves',
-    prompt: `Write an INDIA DIRECT caption. Structure:
-1. Open with an India-specific stat or fact that hits home — name Indian cities, states, or realities (1 sentence). Use crores, not millions.
-2. Connect it to the global system — how the West/billionaires/corporations caused this while India pays the price (1-2 sentences).
-3. Make it about the reader's daily life in India — their water, their food, their city, their children's future (1 sentence).
-4. End with a provocative question or call to share — something that an Indian reader MUST respond to.
-
-Keep it 5-7 lines total. Tone: patriotic anger, protective fury. You're an Indian who is tired of India being exploited.
+Keep it 4-6 lines total. Tone: precise, India-focused. Every line must contain a specific number or measurement.
 
 Example structure:
-"30 Indian cities will run out of drinking water in the next 10 years. Jaipur, Indore, Srinagar — your city might be next.
+"22 of the world's 30 most polluted cities are in India. Delhi's average AQI in winter: 347.
 
-The US emits 15x more CO2 per person than India. But WE get the floods, the heatwaves, and the droughts.
+India's per-capita CO2: 1.9 tonnes. USA: 14.7 tonnes. EU: 6.1 tonnes.
 
-Your kids will pay for their pollution with their lives.
-
-Tag someone who needs to see this."`,
+By 2050, 40 crore Indians face high water stress — more than the population of the US."`,
   },
 ];
 
 const ARCHETYPE_CAPTION_MAP: Record<string, string[]> = {
-  'brutal-stat': ['rage-fuel', 'minimal', 'wake-up-call'],
-  'this-affects-you': ['you-framing', 'india-direct', 'wake-up-call'],
-  'myth-vs-reality': ['rage-fuel', 'opinion-authority', 'debate-trigger'],
-  'inequality-contrast': ['rage-fuel', 'india-direct', 'debate-trigger'],
-  'timeline': ['future-projection', 'wake-up-call', 'minimal'],
-  'if-nothing-changes': ['wake-up-call', 'rage-fuel', 'minimal'],
-  'explainer-stack': ['save-optimized', 'wake-up-call', 'opinion-authority'],
-  'localized-impact': ['india-direct', 'rage-fuel', 'wake-up-call'],
-  'policy-breakdown': ['rage-fuel', 'opinion-authority', 'debate-trigger'],
-  'the-indictment': ['rage-fuel', 'wake-up-call', 'minimal'],
-  'uncomfortable-truth': ['wake-up-call', 'rage-fuel', 'opinion-authority'],
-  'india-on-fire': ['india-direct', 'rage-fuel', 'wake-up-call'],
-  'system-vs-you': ['rage-fuel', 'debate-trigger', 'india-direct'],
-  'philosophical': ['wake-up-call', 'opinion-authority', 'debate-trigger'],
+  'brutal-stat': ['minimal', 'contrast-data', 'save-optimized'],
+  'this-affects-you': ['you-framing', 'data-question', 'save-optimized'],
+  'myth-vs-reality': ['data-authority', 'contrast-data', 'data-question'],
+  'inequality-contrast': ['contrast-data', 'data-question', 'minimal'],
+  'timeline': ['future-projection', 'save-optimized', 'minimal'],
+  'if-nothing-changes': ['future-projection', 'data-authority', 'minimal'],
+  'explainer-stack': ['save-optimized', 'data-authority', 'data-question'],
+  'localized-impact': ['india-data', 'contrast-data', 'save-optimized'],
+  'policy-breakdown': ['data-authority', 'data-question', 'contrast-data'],
+  'the-record': ['minimal', 'save-optimized', 'data-authority'],
+  'data-vs-narrative': ['contrast-data', 'data-authority', 'data-question'],
+  'india-data': ['india-data', 'contrast-data', 'save-optimized'],
+  'scale-comparison': ['contrast-data', 'data-question', 'minimal'],
+  'philosophical': ['data-question', 'data-authority', 'minimal'],
+  'current-event': ['minimal', 'save-optimized', 'future-projection'],
 };
 
 export function pickCaptionStyle(archetypeId?: string): CaptionStyle {
